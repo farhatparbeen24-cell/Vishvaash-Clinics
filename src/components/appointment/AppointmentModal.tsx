@@ -15,7 +15,7 @@ import { AppointmentForm } from "./AppointmentForm";
 import { cn } from "@/lib/utils";
 
 /**
- * Doctor-aware appointment popup — "Schedule Your Visit".
+ * Doctor-aware appointment popup — dialog heading "Book an Appointment".
  *
  * Desktop: left panel = the selected doctor's portrait (the clinic's original
  * owner-verified photo, face-safe crop) + verified profile label (department
@@ -189,9 +189,12 @@ export function AppointmentModal({
                   id="appointment-modal-title"
                   className="font-display mt-1.5 text-2xl leading-tight text-navy sm:text-[1.75rem]"
                 >
-                  {t.popup.title}
+                  {t.popup.heading}
                 </h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
+                <p className="mt-1.5 text-sm font-semibold leading-relaxed text-navy">
+                  {t.popup.support}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                   {t.popup.sub}
                 </p>
 

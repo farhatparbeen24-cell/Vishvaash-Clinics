@@ -142,3 +142,27 @@ Work Log:
 Stage Summary:
 - Exactly 3 files changed: src/lib/doctors.ts, src/components/home/DoctorSlider.tsx, src/lib/translations.ts (git-verified; only Shruti-entry + shared-renderer + 2 label lines).
 - All other doctors, photos, layout, booking form, CAPTCHA, WhatsApp flow, and every other section verified unchanged (text + pixel evidence).
+
+---
+Task ID: 8
+Agent: Super Z (main agent)
+Task: One-time automatic "Book an Appointment" popup on the homepage only — 4s delay after visible load, once per browser session, 30-day suppression after successful submission. Reuse the existing booking modal; no duplicate form; all existing CTAs unchanged.
+
+Work Log:
+- NEW src/lib/appointmentStorage.ts: sessionStorage flag (auto-popup fired this session) + localStorage timestamp (successful submission, 30-day window); all calls try/catch-guarded (private-mode safe). Manual CTAs neither read nor write these flags.
+- NEW src/components/appointment/AutoAppointmentPopup.tsx (renders null): waits for window `load` (document.readyState check), then 4s timer → re-checks suppression → marks session flag → opens the EXISTING modal via openAppointmentModal() (no args = clinic default doctor, identical to header CTA path); skips opening (still consumes the session show) if the visitor already has the dialog open; trigger mounted ONLY in src/app/page.tsx so no other page can ever auto-open.
+- AppointmentForm.tsx: markAppointmentSubmitted() at the exact successful-submission point (all validations + CAPTCHA passed, WhatsApp deep link being opened) — covers submissions from ANY open path (auto or manual CTA).
+- AppointmentModal.tsx: dialog h2 now renders new t.popup.heading ("Book an Appointment" / HI "अपॉइंटमेंट बुक करें") + new supporting line t.popup.support ("Schedule your consultation at Vishvaas Clinic." / HI "Vishvaas Clinic में अपना परामर्श शेड्यूल करें।"); existing eyebrow + sub retained. t.popup.title/sub kept UNTOUCHED — they are still rendered by the homepage AppointmentCTA launcher card ("Schedule Your Visit"), so no other section changed.
+- Pre-existing a11y confirmed (no changes needed): visible X close with aria-label, Escape close, backdrop click close, Tab focus trap, focus restore on close, body+html scroll lock with scrollbar compensation, aria-modal dialog.
+- Verify (scripts/p7-verify-timing.sh + p7-verify-cta-a11y.sh, MutationObserver timing via performance timeline): auto-open 4223ms/4115ms after window load (never instant); heading+support exact; dismiss→reload = no auto-open (session flag); sessionStorage.clear() → auto-opens again; successful submit (CAPTCHA "6 − 1 = ?"→5, wa.me/917252991991, "Preferred Doctor: Dr. Himanshu Arora", window.open intercepted) → localStorage written → NEW session + reload = still suppressed (30-day).
+- CTAs under active 30-day suppression all still open: header (default Himanshu), hero slide CTA ("Book Eye Consultation" → slide doctor), dental service card, Dr. Shruti doctor card (preselects Shruti), AppointmentCTA launcher, ContactLocation, TrustSection, MobileBottomNav (390px); in-dialog switcher cycles all 4 doctors with correct per-doctor service dropdowns (Akshay → Gastro Consultation/Other).
+- CAPTCHA regression: wrong answer "99" → error "Please enter the correct security answer.", 0 wa URLs opened, fresh challenge; correct answer path already proven in Stage D.
+- A11y E2E: Tab from last focusable wraps to first, Shift+Tab from first wraps to last (14 focusables), body scroll locked while open + unlocked after; Escape/backdrop close restores focus to the visible trigger (header CTA + doctor-card CTA verified; initial "failures" were test selectors grabbing a hidden 0×0 duplicate header button — re-verified with visible button: restoredToTrigger true).
+- HI: heading "अपॉइंटमेंट बुक करें" + support line render in dialog; EN⇄HI toggle intact.
+- Responsive: modal usable + form scrollable + submit/CAPTCHA reachable at 360/390/412/768/1280/1440; zero page horizontal overflow; dialog always within viewport. Console: no errors. tsc: 0 src errors (18 pre-existing skills/ only); eslint clean on all touched files.
+- Files: exactly 4 modified (page.tsx, AppointmentForm.tsx, AppointmentModal.tsx, translations.ts) + 2 new (appointmentStorage.ts, AutoAppointmentPopup.tsx). No other section/content/style changed.
+- Screenshots: qa/p7-auto-popup-desktop.png, p7-modal-{360,390,412,768,1280,1440}.png, p7-suppressed-after-submit.png.
+
+Stage Summary:
+- One-time auto booking popup live on the homepage: 4s after full page load, once per session, 30-day suppression after successful submission, homepage-only by construction.
+- Dialog heading "Book an Appointment" + supporting line in EN/HI; every field, selector, pre-selection, CAPTCHA, WhatsApp number/message and CTA behaviour byte-preserved (E2E-verified).

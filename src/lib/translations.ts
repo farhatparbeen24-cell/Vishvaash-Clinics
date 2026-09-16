@@ -556,11 +556,15 @@ const en = {
     } as Record<DoctorId, DoctorText>,
   },
 
-  /** Appointment popup (doctor-aware “Schedule Your Visit” dialog). */
+  /** Appointment popup (doctor-aware booking dialog). */
   popup: {
     eyebrow: "Appointment Request",
+    /* Launcher-card heading (homepage AppointmentCTA section — unchanged). */
     title: "Schedule Your Visit",
     sub: "Fill out the appointment form and our team will contact you shortly.",
+    /* Dialog heading + supporting line (auto-popup spec). */
+    heading: "Book an Appointment",
+    support: "Schedule your consultation at Vishvaas Clinic.",
     chooseDoctor: "Choose your doctor",
     close: "Close the appointment form",
   },
@@ -1111,11 +1115,15 @@ const hi: Dictionary = {
     } as Record<DoctorId, DoctorText>,
   },
 
-  /** अपॉइंटमेंट पॉपअप (डॉक्टर-आधारित “Schedule Your Visit” डायलॉग)। */
+  /** अपॉइंटमेंट पॉपअप (डॉक्टर-आधारित बुकिंग डायलॉग)। */
   popup: {
     eyebrow: "अपॉइंटमेंट अनुरोध",
+    /* लॉन्चर-कार्ड शीर्षक (होमपेज AppointmentCTA सेक्शन — अपरिवर्तित)। */
     title: "अपनी विज़िट शेड्यूल करें",
     sub: "अपॉइंटमेंट फ़ॉर्म भरें और हमारी टीम शीघ्र ही आपसे संपर्क करेगी।",
+    /* डायलॉग शीर्षक + सहायक पंक्ति (ऑटो-पॉपअप स्पेक)। */
+    heading: "अपॉइंटमेंट बुक करें",
+    support: "Vishvaas Clinic में अपना परामर्श शेड्यूल करें।",
     chooseDoctor: "अपना डॉक्टर चुनें",
     close: "अपॉइंटमेंट फ़ॉर्म बंद करें",
   },

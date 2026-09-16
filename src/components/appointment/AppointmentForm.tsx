@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { clinic } from "@/lib/clinic";
 import { appointmentWhatsAppUrl, openWhatsApp } from "@/lib/whatsapp";
+import { markAppointmentSubmitted } from "@/lib/appointmentStorage";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import type { ClinicDoctor } from "@/lib/doctors";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
@@ -221,6 +222,11 @@ export function AppointmentForm({
     setStatus("opening");
     setShowFallback(false);
     setFallbackUrl(url);
+
+    // Successful appointment request: the WhatsApp deep link with the complete
+    // request is being opened. This is the moment the one-time automatic
+    // popup becomes suppressed for at least 30 days (see lib/appointmentStorage).
+    markAppointmentSubmitted();
 
     // Attempt to open WhatsApp; detect blockage both via the return value
     // and a window-blur heuristic (noopener makes the return value null in

@@ -13,6 +13,7 @@ import { Testimonials } from "@/components/home/Testimonials";
 import { AppointmentCTA } from "@/components/home/AppointmentCTA";
 import { ContactLocation } from "@/components/contact/ContactLocation";
 import { Availability } from "@/components/home/Availability";
+import { AutoAppointmentPopup } from "@/components/appointment/AutoAppointmentPopup";
 
 /**
  * Vishvaas Clinic – Eye & Dental Care
@@ -39,6 +40,8 @@ export default function Home() {
       </main>
       <Footer />
       <MobileBottomNav />
+      {/* One-time automatic booking popup — homepage only (see component). */}
+      <AutoAppointmentPopup />
     </div>
   );
 }
