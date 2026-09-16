@@ -148,7 +148,7 @@ export const clinic = {
     serviceOptions: [
       { key: "general", value: "General Eye Consultation" },
       { key: "cataract", value: "Cataract Care" },
-      { key: "dryEye", value: "Dry Eye Care" },
+      { key: "glaucoma", value: "Glaucoma Care" },
       { key: "exam", value: "Eye Examination" },
       { key: "emergency", value: "Emergency Eye Care" },
       { key: "dentalConsult", value: "Dental Consultation" },
@@ -158,7 +158,7 @@ export const clinic = {
       key:
         | "general"
         | "cataract"
-        | "dryEye"
+        | "glaucoma"
         | "exam"
         | "emergency"
         | "dentalConsult"
@@ -204,7 +204,7 @@ export const clinic = {
       "https://www.vishvaasclinics.com",
     title: "Vishvaas Clinic | Eye & Dental Care — Sahastradhara Road, Dehradun",
     description:
-      "Vishvaas Clinic, Dehradun offers eye care consultations — cataract care, dry eye care, comprehensive eye examinations and emergency eye care — along with dental consultations, near Sahastradhara Road. Request an appointment on WhatsApp.",
+      "Vishvaas Clinic, Dehradun offers eye care consultations — cataract care, glaucoma care, comprehensive eye examinations and emergency eye care — along with dental consultations, near Sahastradhara Road. Request an appointment on WhatsApp.",
     ogImage: "/images/clinic/exterior-building.jpg",
   },
 

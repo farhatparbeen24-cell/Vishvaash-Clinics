@@ -21,7 +21,7 @@ export type Locale = (typeof locales)[number];
 export type ServiceOptionKey =
   | "general"
   | "cataract"
-  | "dryEye"
+  | "glaucoma"
   | "exam"
   | "emergency"
   | "dentalConsult"
@@ -99,7 +99,7 @@ const en = {
         eyebrow: "VISHVAAS CLINIC",
         heading: "Clearer vision begins with thoughtful care.",
         copy:
-          "Personalised support for routine eye examinations, cataract care, dry-eye concerns and urgent eye-care needs.",
+          "Personalised support for routine eye examinations, cataract care, glaucoma care and urgent eye-care needs.",
         primary: "Book Eye Consultation",
         secondary: "Explore Eye Care",
       },
@@ -196,7 +196,7 @@ const en = {
       },
       {
         title: "Support for common eye-care needs",
-        body: "From routine examinations to cataract and dry-eye consultations, under one roof.",
+        body: "From routine examinations to cataract and glaucoma consultations, under one roof.",
       },
     ],
   },
@@ -206,7 +206,7 @@ const en = {
     eyebrow: "Meet the Doctor",
     accent: "— care, explained.",
     intro:
-      "Dr. Himanshu Arora consults at Vishvaas Clinic on Sahastradhara Road, Dehradun — seeing patients for cataract care, dry eye concerns, comprehensive eye examinations and urgent eye-care needs.",
+      "Dr. Himanshu Arora consults at Vishvaas Clinic on Sahastradhara Road, Dehradun — seeing patients for cataract care, glaucoma care, comprehensive eye examinations and urgent eye-care needs.",
     profileNote:
       "Professional profile details to be confirmed — qualifications, memberships and experience will be published here once verified with the clinic.",
     approachNote:
@@ -317,7 +317,7 @@ const en = {
     serviceOptionLabels: {
       general: "General Eye Consultation",
       cataract: "Cataract Care",
-      dryEye: "Dry Eye Care",
+      glaucoma: "Glaucoma Care",
       exam: "Eye Examination",
       emergency: "Emergency Eye Care",
       dentalConsult: "Dental Consultation",
@@ -596,7 +596,7 @@ const hi: Dictionary = {
         eyebrow: "विश्वास क्लिनिक",
         heading: "बेहतर दृष्टि की शुरुआत सोच-समझकर की गई देखभाल से होती है।",
         copy:
-          "नियमित नेत्र जांच, मोतियाबिंद देखभाल, ड्राई आई संबंधी समस्याओं और तत्काल नेत्र-देखभाल आवश्यकताओं के लिए व्यक्तिगत सहायता।",
+          "नियमित नेत्र जांच, मोतियाबिंद देखभाल, ग्लूकोमा देखभाल और तत्काल नेत्र-देखभाल आवश्यकताओं के लिए व्यक्तिगत सहायता।",
         primary: "नेत्र परामर्श बुक करें",
         secondary: "नेत्र देखभाल देखें",
       },
@@ -693,7 +693,7 @@ const hi: Dictionary = {
       },
       {
         title: "सामान्य नेत्र-देखभाल ज़रूरतों के लिए सहायता",
-        body: "नियमित नेत्र जांच से लेकर मोतियाबिंद और ड्राई आई परामर्श तक — एक ही छत के नीचे।",
+        body: "नियमित नेत्र जांच से लेकर मोतियाबिंद और ग्लूकोमा परामर्श तक — एक ही छत के नीचे।",
       },
     ],
   },
@@ -703,7 +703,7 @@ const hi: Dictionary = {
     eyebrow: "हमारे डॉक्टर से मिलें",
     accent: "— देखभाल, समझाकर।",
     intro:
-      "डॉ. हिमांशु अरोड़ा Vishvaas Clinic, सहस्त्रधारा रोड, देहरादून में परामर्श करते हैं — मोतियाबिंद देखभाल, ड्राई आई, पूर्ण नेत्र जांच और आपातकालीन नेत्र-देखभाल के लिए।",
+      "डॉ. हिमांशु अरोड़ा Vishvaas Clinic, सहस्त्रधारा रोड, देहरादून में परामर्श करते हैं — मोतियाबिंद देखभाल, ग्लूकोमा देखभाल, पूर्ण नेत्र जांच और आपातकालीन नेत्र-देखभाल के लिए।",
     profileNote:
       "प्रोफ़ाइल की पेशेवर जानकारी पुष्टि के लिए लंबित है — योग्यताएँ, मेंबरशिप और अनुभव क्लिनिक से सत्यापित होने के बाद यहाँ प्रकाशित होंगे।",
     approachNote:
@@ -814,7 +814,7 @@ const hi: Dictionary = {
     serviceOptionLabels: {
       general: "सामान्य नेत्र परामर्श",
       cataract: "मोतियाबिंद देखभाल",
-      dryEye: "ड्राई आई देखभाल",
+      glaucoma: "ग्लूकोमा देखभाल",
       exam: "नेत्र जांच",
       emergency: "आपातकालीन नेत्र देखभाल",
       dentalConsult: "दंत परामर्श",

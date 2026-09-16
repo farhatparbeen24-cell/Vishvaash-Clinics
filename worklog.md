@@ -41,3 +41,26 @@ Work Log:
 Stage Summary:
 - All five approved revisions live on port 3000 preview; nothing else altered.
 - Screenshots: /home/z/my-project/download/qa/p1-*.png
+
+---
+Task ID: 3
+Agent: Super Z (main agent)
+Task: Remove "Dry Eye Care" from every remaining public-facing location (booking-form service dropdowns, doctor tags, labels, filters, hidden/public content) and replace with "Glaucoma Care" only where service mapping and booking behavior remain correct. No changes to doctor names, doctor-photo layout, WhatsApp number, appointment fields or booking message structure.
+
+Work Log:
+- Full-project sweep for dry-eye variants (EN "Dry Eye Care"/"dry-eye", key "dryEye", HI "ड्राई आई") across src/ + public/: 10 occurrences in 3 lib files (clinic.ts, doctors.ts, translations.ts). public/, src/app/ (metadata/JSON-LD/sitemap) clean.
+- Traced consumers: AppointmentForm.tsx (dropdown = clinic.form.serviceOptions filtered by doctor.serviceOptions via VALUE-string join; WhatsApp msg = option VALUE via translations[locale].wa.appointment), DoctorSlider.tsx (tags = doctor.serviceOptions → key lookup → serviceOptionLabels), AppointmentProvider.normalizeServiceValue (no dry-eye mapping — untouched).
+- clinic.ts: form option { key:"dryEye", value:"Dry Eye Care" } → { key:"glaucoma", value:"Glaucoma Care" } (same dropdown position); type union "dryEye"→"glaucoma"; SEO meta description "dry eye care"→"glaucoma care".
+- doctors.ts: Dr. Himanshu Arora serviceOptions "Dry Eye Care"→"Glaucoma Care" (drives both his popup dropdown options and his card tags). Dental doctor + all names/photos/layout untouched.
+- translations.ts: ServiceOptionKey union; EN hero slide-1 copy → "...cataract care, glaucoma care and urgent eye-care needs."; EN why-us card body → "...cataract and glaucoma consultations, under one roof."; EN doctor intro → "...glaucoma care, comprehensive eye examinations..."; EN serviceOptionLabels glaucoma:"Glaucoma Care"; HI equivalents: hero copy (ग्लूकोमा देखभाल), why-us (ग्लूकोमा परामर्श), doctor intro (ग्लूकोमा देखभाल), labels glaucoma:"ग्लूकोमा देखभाल" (matches existing HI Glaucoma Care service card term).
+- Booking structure preserved: same 8 options, same fields/order/labels in wa template; submitted service VALUE for the replaced option is now canonical "Glaucoma Care" (stable front-desk value per file's design note); normalizeServiceValue, prefill logic, dental options untouched.
+- Verification: rg residue sweep = 0 matches (EN/HI/key form); tsc clean in src/; eslint clean; dev.log 200s.
+- Browser E2E (EN): popup dropdown shows Glaucoma Care for Dr. Himanshu (5 eye options); submitted form → wa.me/917252991991 message: identical structure, "Service Required: Glaucoma Care", doctor/department/fields unchanged (window.open intercepted, no real message sent).
+- Browser E2E (HI): dropdown "ग्लूकोमा देखभाल"; Hindi wa message identical structure with "आवश्यक सेवा: Glaucoma Care". ड्राई = 0 matches.
+- Dr. Shruti Beri Arora dropdown unchanged (Dental Consultation / General Dental Care / Other / Not Sure).
+- QA screenshots /home/z/my-project/download/qa/: p2-glaucoma-booking-modal-1280.png, p2-glaucoma-booking-modal-390.png, p2-glaucoma-doctor-tag-visible-1280.png (mobile-width doctor card tag render), p2-glaucoma-hero-slide1-1280.png. Overflow sweep 360/390/412/768/1280/1440: zero horizontal overflow. Console: no errors.
+- Note: QA screenshots were taken via scripted interaction; one screenshot named *-1280 captured at 390px viewport (harmless naming artifact).
+
+Stage Summary:
+- "Dry Eye Care" fully removed from all public-facing + hidden content in EN and HI; replaced by "Glaucoma Care" everywhere the eye-care service mapping is correct (booking dropdown, doctor tags, hero copy, why-us card, doctor intro, SEO meta).
+- Exactly 3 files changed: src/lib/clinic.ts, src/lib/doctors.ts, src/lib/translations.ts. Booking flow, WhatsApp number/message structure, doctor names/photos/layout, appointment fields, dental content: verified unchanged.

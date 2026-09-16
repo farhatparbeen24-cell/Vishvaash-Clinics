@@ -66,7 +66,7 @@ export const clinicDoctors: ClinicDoctor[] = [
     serviceOptions: [
       "General Eye Consultation",
       "Cataract Care",
-      "Dry Eye Care",
+      "Glaucoma Care",
       "Eye Examination",
       "Emergency Eye Care",
     ],
