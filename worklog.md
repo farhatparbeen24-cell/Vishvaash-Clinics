@@ -186,3 +186,29 @@ Stage Summary:
 - Hydration error was a stale-client-bundle dev-mode artifact, not an app defect; current code hydrates cleanly (proven across 8 load scenarios) and Radix a11y wiring is intact.
 - User remediation: one hard reload (Ctrl+Shift+R) — or clear site data / incognito if ever seen again — dev server freshly restarted.
 - Task 8 auto-popup behaviour re-verified end-to-end post-restart (timing, heading, suppression, manual CTAs, CAPTCHA).
+
+---
+Task ID: 10
+Agent: Super Z (main agent)
+Task: User deployed the site to Vercel — verify the production bundle hydrates cleanly and every feature (Task 8 auto-popup, booking modal, legal dialogs, EN/HI) works in prod mode, since Vercel serves the same tree.
+
+Work Log:
+- Repo state: git working tree clean (all Task 7/8/9 changes committed), no remote configured; dev server healthy on :3000.
+- `bun run build`: EXIT 0, compiled successfully (webpack, NOT Turbopack — content-hashed chunks, so the Task 9 stale-chunk artifact is structurally impossible in prod), 8/8 static pages generated. `Skipping validation of types` is the pre-existing next.config setting; src/ confirmed type-clean earlier.
+- Served the prod build via `next start -- --port 3001` (double-forked) and ran new E2E suite `scripts/p10-prod-verify.sh`:
+  A. PASS — SSR HTML radix ids (curl) identical to hydrated DOM ids (radix-_R_da5fbb_/_R_la5fbb_) → no hydration fallback/mismatch in prod.
+  B. PASS — auto-popup opened Δ=4040ms after load, heading "Book an Appointment" + "Schedule your consultation at Vishvaas Clinic.", session flag written, CAPTCHA input present.
+  C. PASS — Escape closed it; reload within same session → no re-fire (sessionStorage suppression).
+  D. PASS — header CTA reopens booking modal (inputs + aria-labelled close button); Escape closes.
+  E. PASS — privacy/terms triggers aria-controls === dialog id; both dialogs open.
+  F. PASS — EN→HI toggle (hi-IN, footer गोपनीयता नीति / शर्तें एवं चिकित्सा अस्वीकरण).
+  G. PASS — zero horizontal overflow at 390px. H. PASS — zero runtime/console errors, zero 4xx/5xx network requests.
+  RESULT: 7/7 PASS.
+- Two initial "FAILs" were QA-script bugs, not app bugs: (1) sed left a trailing quote breaking the id string-compare (ids were actually identical); (2) invalid unquoted CSS attribute selector `button[aria-label*lose]` → Chrome rejected it; the modal's close button exists as aria-label="Close the appointment form". Fixed both and re-ran to green.
+- Ops: pkill "next-server" accidentally took down the dev server as well (same process name); restored with the documented double-fork `( (setsid bun run dev >> dev.log 2>&1 < /dev/null) & )`, port 3000 back to 200; browser sanity re-check passed (title + auto-popup correct).
+- Zero src/ changes in this task (build + verification only). Prod test server on 3001 stopped after verification.
+
+Stage Summary:
+- Production bundle (what Vercel serves) verified end-to-end: hydration clean, auto-popup timing/suppression, manual CTAs, legal dialogs, bilingual toggle, responsive overflow — all green.
+- The earlier hydration error cannot occur on Vercel's production build (hashed chunks, no HMR state); the dev-mode diagnosis from Task 9 stands.
+- Note for future agents: never `pkill -f next-server` while dev is running — it matches the dev server too. Kill by port/PID instead.
