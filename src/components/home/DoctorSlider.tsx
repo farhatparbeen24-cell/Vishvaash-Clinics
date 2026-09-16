@@ -109,18 +109,44 @@ function DoctorCard({
             </p>
           )}
 
-          {/* Credentials — verbatim approved facts only */}
+          {/* Credentials — verbatim approved facts only. Qualifications may
+              be a single line or several compact credential lines (owner-
+              approved per-doctor format); each line renders as one row. */}
           <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-ink">
-            <li className="flex items-start gap-2.5">
-              <GraduationCap
-                className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
-                aria-hidden
-              />
-              <span>
-                <span className="sr-only">{t.doctors.cardLabels.qualifications}: </span>
-                {doctor.qualifications}
-              </span>
-            </li>
+            {(Array.isArray(doctor.qualifications)
+              ? doctor.qualifications
+              : [doctor.qualifications]
+            ).map((line) => (
+              <li key={line} className="flex items-start gap-2.5">
+                <GraduationCap
+                  className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                  aria-hidden
+                />
+                <span>
+                  <span className="sr-only">{t.doctors.cardLabels.qualifications}: </span>
+                  {line}
+                </span>
+              </li>
+            ))}
+            {/* Previous associations — subtle label + owner-approved names */}
+            {doctor.exConsultant && (
+              <li className="flex items-start gap-2.5">
+                <Building2
+                  className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                  aria-hidden
+                />
+                <div>
+                  <span className="block text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-soft">
+                    {t.doctors.cardLabels.previouslyWith}
+                  </span>
+                  <ul className="mt-1 space-y-1">
+                    {doctor.exConsultant.map((hospital) => (
+                      <li key={hospital}>{hospital}</li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            )}
             {text.credentialLine && (
               <li className="flex items-start gap-2.5">
                 <Award className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep" aria-hidden />

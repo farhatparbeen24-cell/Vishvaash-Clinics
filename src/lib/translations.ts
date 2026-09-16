@@ -531,6 +531,7 @@ const en = {
       clinic: "Clinic",
       consultingHours: "Consulting Hours",
       availability: "Availability",
+      previouslyWith: "Previously associated with",
     },
     regPrefix: "Reg. No.",
     people: {
@@ -1085,6 +1086,7 @@ const hi: Dictionary = {
       clinic: "क्लिनिक",
       consultingHours: "परामर्श समय",
       availability: "उपलब्धता",
+      previouslyWith: "पूर्व में संबद्ध",
     },
     regPrefix: "पंजीकरण सं.",
     people: {

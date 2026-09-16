@@ -56,8 +56,19 @@ export type ClinicDoctor = {
   role: string;
   /** Optional second clinical-focus line (approved for Dr. Himanshu Arora). */
   focus?: string;
-  /** Degree string — language-neutral (abbreviations are not translated). */
-  qualifications: string;
+  /**
+   * Degree line(s) — language-neutral (abbreviations and institution names
+   * are not translated). A single string renders as one credential row; an
+   * array renders one compact credential row per entry (owner-approved
+   * format for Dr. Shruti Beri Arora).
+   */
+  qualifications: string | string[];
+  /**
+   * Previous hospital associations (owner-supplied, verbatim). Rendered as a
+   * subtly labelled list on the doctor card — currently Dr. Shruti Beri
+   * Arora only. Never add an entry without owner-verified facts.
+   */
+  exConsultant?: string[];
   /** Optional fellowship line (translated rendering lives in translations.ts). */
   credentialLine?: string;
   /** Council registration identifier WITHOUT the "Reg. No." prefix. */
@@ -105,7 +116,15 @@ export const clinicDoctors: ClinicDoctor[] = [
     department: "Dental Care",
     group: "core",
     role: "Consultant Dental Surgeon & Periodontist",
-    qualifications: "BDS, MDS",
+    qualifications: [
+      "B.D.S. — Manipal",
+      "M.D.S. — Government Dental College, Chennai",
+    ],
+    exConsultant: [
+      "Guru Teg Bahadur Hospital, Dehradun",
+      "Apollo Speciality Hospital, Trichy, Tamil Nadu",
+      "Noble Medical & Dental College, Nepal",
+    ],
     image: "/images/doctors/dr-shruti-beri-arora-profile.webp",
     alt: "Dr. Shruti Beri Arora, Consultant Dental Surgeon and Periodontist",
     serviceOptions: [

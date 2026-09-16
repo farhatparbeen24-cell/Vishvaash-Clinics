@@ -122,3 +122,23 @@ Stage Summary:
 - Meet the Doctors: 4 real approved portraits, Core/Visiting grouping, uniform premium cards, verified credentials only.
 - Booking: all 4 doctors selectable everywhere (cards, popup switcher, launcher chips), per-card preselection verified E2E, CAPTCHA blocks invalid submissions.
 - Screenshots: qa/p3-doctors-1280.png, p3-doctors-cards-1280.png, p3-visiting-top.png, p3-visiting-bottom.png, p3-visiting-cards.png, p3-doctors-390.png, p3-doctors-390-card4.png.
+
+---
+Task ID: 7
+Agent: Super Z (main agent)
+Task: Single limited correction — update ONLY Dr. Shruti Beri Arora's credentials in "Meet the Doctors". No other doctor's content, no photos, no card design/layout/order, no booking form, CAPTCHA, WhatsApp flow, or any other section.
+
+Work Log:
+- Before-state captured: per-card innerText + viewport-anchored screenshots (scripts/p6-shruti-capture.sh → qa/p6-before-*.png).
+- doctors.ts: type widened `qualifications: string | string[]` (single-string doctors render byte-identically) + new optional `exConsultant?: string[]`; Shruti's entry only → qualifications ["B.D.S. — Manipal", "M.D.S. — Government Dental College, Chennai"], exConsultant [Guru Teg Bahadur Hospital Dehradun / Apollo Speciality Hospital Trichy Tamil Nadu / Noble Medical & Dental College Nepal]. Name/role/image/alt/serviceOptions/whatsappLabel untouched; all 3 other doctors' entries byte-identical.
+- DoctorSlider.tsx: qualification rows render per-line via array map (identical output for string doctors); added ex-consultant block (Building2 icon + subtle micro-caps label + hospital list) in the same credential ul; CTA/portrait/hours markup untouched.
+- translations.ts: +1 key each in EN/HI cardLabels: previouslyWith "Previously associated with" / "पूर्व में संबद्ध". Nothing else.
+- Verify: tsc clean in src (only pre-existing skills/ errors); eslint clean on 3 files; compare script (scripts/p6-compare.py): Himanshu/Shalabh/Akshay innerText byte-IDENTICAL + content-region pixel diff = 0 strong-diff pixels; Shruti card = old "BDS, MDS" removed, all 5 new lines + label present verbatim, role directly below name, no extra text.
+- E2E: Shruti CTA → modal preselects Dr. Shruti Beri Arora (panel DENTAL CARE + her name + role), switcher shows all 4 doctors, service dropdown [Dental Consultation, General Dental Care, Other / Not Sure] unchanged, CAPTCHA input present. HI: role unchanged (सलाहकार दंत सर्जन एवं पीरियोडोन्टिस्ट), credentials are language-neutral proper nouns, label पूर्व में संबद्ध.
+- Overflow: 360/390/412/768/1280/1440 EN + 360/1440 HI → zero horizontal overflow (page + card level). Console: no errors (only pre-existing dev warnings).
+- Note: Core row height grew 990→1041px because equal-height cards stretch to Shruti's taller card — CTA stays bottom-anchored; Himanshu's content region pixel-identical.
+- Screenshots: qa/p6-before/after-card{0-3}-1280.png, p6-after-shruti-card.png (1280 EN), p6-after-doctors-1280.png, p6-after-shruti-card-360-hi.png.
+
+Stage Summary:
+- Exactly 3 files changed: src/lib/doctors.ts, src/components/home/DoctorSlider.tsx, src/lib/translations.ts (git-verified; only Shruti-entry + shared-renderer + 2 label lines).
+- All other doctors, photos, layout, booking form, CAPTCHA, WhatsApp flow, and every other section verified unchanged (text + pixel evidence).
