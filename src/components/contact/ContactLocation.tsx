@@ -22,7 +22,7 @@ export function ContactLocation() {
     <section id="contact" aria-label={t.contact.ariaLabel} className="scroll-mt-24">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
         <SectionHeading
-          index="05"
+          index="07"
           eyebrow={t.contact.eyebrow}
           title={
             <>

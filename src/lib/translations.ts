@@ -173,6 +173,38 @@ const en = {
     titleA: "Dental services, beside the eye clinic",
     titleAccent: "you already trust.",
     body: "Vishvaas Clinic also offers dental care at the same address. Details about available dental consultations and schedules are shared personally by our front desk — message us and we will guide you.",
+    items: [
+      {
+        title: "Root Canal Treatment",
+        blurb:
+          "Pain-free root canal therapy to save and restore damaged teeth.",
+      },
+      {
+        title: "Dental Implants",
+        blurb:
+          "Permanent, natural-looking tooth replacement with dental implants.",
+      },
+      {
+        title: "Teeth Whitening",
+        blurb:
+          "Professional teeth whitening for a brighter, more confident smile.",
+      },
+      {
+        title: "Dental Veneers",
+        blurb:
+          "Custom veneers to correct chips, gaps, and discoloration.",
+      },
+      {
+        title: "Orthodontic Treatment",
+        blurb:
+          "Modern braces and clear aligners to straighten teeth effectively.",
+      },
+      {
+        title: "Periodontal Care",
+        blurb:
+          "Treatment and prevention of gum disease for healthy gums and teeth.",
+      },
+    ],
   },
 
   trust: {
@@ -670,6 +702,38 @@ const hi: Dictionary = {
     titleA: "नेत्र क्लिनिक के साथ, दंत सेवाएँ भी —",
     titleAccent: "जिस पर आपको पहले से भरोसा है।",
     body: "Vishvaas Clinic इसी पते पर दंत चिकित्सा भी उपलब्ध कराता है। उपलब्ध दंत परामर्श और समय-सारणी की जानकारी हमारा फ्रंट डेस्क व्यक्तिगत रूप से साझा करता है — संदेश भेजें, हम आपका मार्गदर्शन करेंगे।",
+    items: [
+      {
+        title: "रूट कैनल ट्रीटमेंट",
+        blurb:
+          "क्षतिग्रस्त दाँतों को बचाने और पुनर्स्थापित करने के लिए दर्द-रहित रूट कैनल उपचार।",
+      },
+      {
+        title: "डेंटल इम्प्लांट",
+        blurb:
+          "डेंटल इम्प्लांट के साथ स्थायी, स्वाभाविक दिखने वाले दाँतों का प्रतिस्थापन।",
+      },
+      {
+        title: "टीथ व्हाइटनिंग",
+        blurb:
+          "अधिक चमकदार, आत्मविश्वास से भरी मुस्कान के लिए पेशेवर टीथ व्हाइटनिंग।",
+      },
+      {
+        title: "डेंटल वीनियर",
+        blurb:
+          "दाँतों के टूटे हिस्से, गैप और रंग में आए बदलाव को ठीक करने के लिए कस्टम वीनियर।",
+      },
+      {
+        title: "ऑर्थोडॉन्टिक उपचार",
+        blurb:
+          "दाँतों को प्रभावी ढंग से सीधा करने के लिए आधुनिक ब्रेसेस और क्लियर अलाइनर।",
+      },
+      {
+        title: "पीरियोडॉन्टल देखभाल",
+        blurb:
+          "स्वस्थ मसूड़ों और दाँतों के लिए मसूड़ों की बीमारी का उपचार और रोकथाम।",
+      },
+    ],
   },
 
   trust: {

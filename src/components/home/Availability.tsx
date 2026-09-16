@@ -24,8 +24,9 @@ export function Availability() {
       className="scroll-mt-24 border-t border-line bg-white"
     >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        {/* No section index — Availability is a supporting strip outside the
+            numbered 01–07 homepage section order (Phase 2). */}
         <SectionHeading
-          index={a.index}
           eyebrow={a.eyebrow}
           title={
             <>

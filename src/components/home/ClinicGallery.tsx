@@ -125,6 +125,7 @@ export function ClinicGallery() {
     >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
         <SectionHeading
+          index="05"
           eyebrow={t.gallery.eyebrow}
           title={t.gallery.title}
           lede={t.gallery.lede}

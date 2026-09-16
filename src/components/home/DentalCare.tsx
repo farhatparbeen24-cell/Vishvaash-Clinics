@@ -1,14 +1,42 @@
 "use client";
 
-import { Smile, MessageCircleQuestion } from "lucide-react";
+import {
+  Smile,
+  MessageCircleQuestion,
+  Syringe,
+  Anchor,
+  Sparkles,
+  Layers,
+  AlignCenter,
+  ShieldPlus,
+} from "lucide-react";
+import { clinic } from "@/lib/clinic";
+import { DEFAULT_DOCTOR_ID } from "@/lib/doctors";
 import { waLink } from "@/lib/whatsapp";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import { Reveal } from "@/components/ui/Reveal";
+import { ServiceCta } from "./ServiceCta";
+
+const dentalIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Syringe,
+  Anchor,
+  Sparkles,
+  Layers,
+  AlignCenter,
+  ShieldPlus,
+};
 
 /**
- * Dental Care — deliberately restrained.
- * Only the verified fact (dental care is offered at Vishvaas Clinic) is
- * stated; treatment lists, claims and timings are NOT invented.
+ * Dental Care — restrained banner + six dental service cards (Phase 2).
+ *
+ * • The banner keeps the verified, claim-free section copy (unchanged).
+ * • The card grid mirrors the Eye Care card style exactly (same tile, icon
+ *   treatment, typography and "Request Consultation" CTA) with the six
+ *   owner-supplied dental services rendered verbatim.
+ * • Card CTAs open the same appointment popup with the clinic's default
+ *   doctor (Dr. Himanshu Arora) pre-selected, per owner instruction — the
+ *   in-popup switcher lets the visitor choose Dr. Shruti Beri Arora in one
+ *   tap; booking fields and WhatsApp message structure are untouched.
  */
 export function DentalCare() {
   const { t } = useLanguage();
@@ -27,7 +55,12 @@ export function DentalCare() {
                 <Smile className="h-8 w-8" aria-hidden />
               </span>
               <div className="max-w-2xl">
-                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-sand">
+                <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-sand">
+                  {/* Section number — editorial index (02) matching SectionHeading */}
+                  <span aria-hidden className="font-display text-sm tracking-normal">
+                    02
+                  </span>
+                  <span aria-hidden className="h-px w-8 bg-sand/40" />
                   {t.dental.eyebrow}
                 </p>
                 <h2 className="font-display mt-3 text-2xl leading-snug text-offwhite sm:text-3xl">
@@ -50,6 +83,39 @@ export function DentalCare() {
             </div>
           </div>
         </Reveal>
+
+        {/* Six dental service cards — same tile style as the Eye Care grid */}
+        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {clinic.dentalServices.map((service, i) => {
+            const Icon = dentalIconMap[service.icon] ?? Smile;
+            const copy = t.dental.items[i] ?? {
+              title: service.title,
+              blurb: service.blurb,
+            };
+            return (
+              <Reveal as="li" key={service.slug} delay={i * 90}>
+                <article className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-sand/40 hover:shadow-[0_24px_48px_-28px_rgba(11,43,64,0.35)]">
+                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-aqua text-sand-deep transition-colors duration-300 group-hover:bg-navy group-hover:text-sand">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <h3 className="font-display mt-5 text-xl leading-snug text-navy">
+                    {copy.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">
+                    {copy.blurb}
+                  </p>
+                  <div className="mt-5">
+                    <ServiceCta
+                      canonical={service.title}
+                      label={t.cta.requestConsultation}
+                      doctorId={DEFAULT_DOCTOR_ID}
+                    />
+                  </div>
+                </article>
+              </Reveal>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

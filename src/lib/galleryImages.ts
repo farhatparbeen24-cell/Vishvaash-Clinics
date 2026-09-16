@@ -142,4 +142,18 @@ export const galleryImages: GalleryImage[] = [
       note: "Clinic owner-supplied photo — second consultation room (no faces)",
     },
   },
+  {
+    id: "treatment-room",
+    src: "/images/gallery/gallery-treatment-room.jpg",
+    width: 1051,
+    height: 658,
+    alt: {
+      en: "Treatment room at Vishvaas Clinic with procedure table and IV stand",
+      hi: "विश्वास क्लिनिक का उपचार कक्ष — प्रोसीजर टेबल और IV स्टैंड के साथ",
+    },
+    source: {
+      originalUpload: "IMG-20260912-WA0027.jpg",
+      note: "Clinic owner-supplied photo, re-submitted by the owner for the gallery (Phase 2) — baked-in decorative frame and camera date stamp removed by straight border/bottom crops only (no retouching, no content alteration); previously excluded from the Phase-0 batch for the same frame",
+    },
+  },
 ];

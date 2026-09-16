@@ -138,6 +138,56 @@ export const clinic = {
     },
   ] as Array<{ slug: string; icon: string; title: string; blurb: string }>,
 
+  /**
+   * Dental service categories (Phase 2, owner-supplied titles/descriptions —
+   * rendered verbatim). CTA opens the appointment popup with the clinic's
+   * default doctor pre-selected, per owner instruction.
+   */
+  dentalServices: [
+    {
+      slug: "root-canal-treatment",
+      icon: "Syringe",
+      title: "Root Canal Treatment",
+      blurb:
+        "Pain-free root canal therapy to save and restore damaged teeth.",
+    },
+    {
+      slug: "dental-implants",
+      icon: "Anchor",
+      title: "Dental Implants",
+      blurb:
+        "Permanent, natural-looking tooth replacement with dental implants.",
+    },
+    {
+      slug: "teeth-whitening",
+      icon: "Sparkles",
+      title: "Teeth Whitening",
+      blurb:
+        "Professional teeth whitening for a brighter, more confident smile.",
+    },
+    {
+      slug: "dental-veneers",
+      icon: "Layers",
+      title: "Dental Veneers",
+      blurb:
+        "Custom veneers to correct chips, gaps, and discoloration.",
+    },
+    {
+      slug: "orthodontic-treatment",
+      icon: "AlignCenter",
+      title: "Orthodontic Treatment",
+      blurb:
+        "Modern braces and clear aligners to straighten teeth effectively.",
+    },
+    {
+      slug: "periodontal-care",
+      icon: "ShieldPlus",
+      title: "Periodontal Care",
+      blurb:
+        "Treatment and prevention of gum disease for healthy gums and teeth.",
+    },
+  ] as Array<{ slug: string; icon: string; title: string; blurb: string }>,
+
   /** Appointment request form options -------------------------------------- */
   form: {
     /**

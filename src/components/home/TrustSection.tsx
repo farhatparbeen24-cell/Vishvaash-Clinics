@@ -21,7 +21,7 @@ export function TrustSection() {
     <section id="why-us" aria-label={t.trust.ariaLabel} className="scroll-mt-24">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
         <SectionHeading
-          index="02"
+          index="03"
           eyebrow={t.trust.eyebrow}
           title={
             <>

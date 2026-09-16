@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Eye, Stethoscope, Pill, Info, type LucideIcon } from "lucide-react";
 import { brandGroups, type BrandGroupId } from "@/lib/brands";
 import { useLanguage } from "@/components/language/LanguageProvider";
@@ -14,9 +15,13 @@ import { Reveal } from "@/components/ui/Reveal";
  *    listing). It NEVER states or implies partnership, authorisation,
  *    exclusivity or endorsement. The identification note below the panels
  *    states this explicitly in EN + HI.
- *  • Until official, clinic-approved logo files exist, every brand renders as
- *    a neutral TEXT wordmark in the site's own typography — an internal
- *    preview placeholder, not an imitation of any company's official logo.
+ *  • Phase 2 (owner instruction): each brand renders its OFFICIAL logo file
+ *    (fetched from the company's own site or a trusted source — provenance
+ *    documented in lib/brands.ts) as a small mark aligned with the brand
+ *    name. Unaltered assets, original aspect ratio, no recolouring. Brands
+ *    whose official asset could not be verified keep the neutral TEXT
+ *    wordmark fallback. Logo images are decorative (alt="") — the brand
+ *    name text right beside them carries the information.
  *  • No product/equipment photos, no badges ("Certified"/"Authorised"/
  *    "Partner"), no carousel or ticker, no external brand links, no animation
  *    beyond the site's standard reduced-motion-aware scroll reveal.
@@ -72,6 +77,7 @@ export function BrandsWeUse() {
       <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
         <SectionHeading
           align="center"
+          index="04"
           eyebrow={t.brands.eyebrow}
           title={t.brands.title}
           lede={t.brands.lede}
@@ -99,16 +105,27 @@ export function BrandsWeUse() {
                     </h3>
                   </div>
 
-                  {/* Neutral text wordmarks — swapped for approved official
-                      logo files only after written clinic confirmation.
-                      Full-width hairline row separators (last row's own rule
-                      is clipped by the panel edge); no individual logo cards. */}
+                  {/* Official logo mark + brand name — fixed optical height,
+                      original aspect ratio (object-contain), no distortion.
+                      Brands without a verified official file render the
+                      neutral text wordmark only. */}
                   <ul className="-mb-px grid grid-cols-2 border-t border-line/70 sm:grid-cols-3">
                     {group.brands.map((brand) => (
                       <li
                         key={brand.name}
-                        className="flex h-14 items-center justify-center border-b border-line/60 px-2.5 sm:h-16 sm:px-3"
+                        className="flex h-14 items-center justify-center gap-1.5 border-b border-line/60 px-2 sm:h-16 sm:px-2.5"
                       >
+                        {brand.logo && brand.logoW && brand.logoH ? (
+                          <Image
+                            src={brand.logo}
+                            alt=""
+                            width={brand.logoW}
+                            height={brand.logoH}
+                            sizes="64px"
+                            loading="lazy"
+                            className="h-4 w-auto max-w-[48px] shrink-0 object-contain"
+                          />
+                        ) : null}
                         <span className="text-center text-[12.5px] font-bold leading-snug tracking-[0.04em] text-ink-soft sm:text-[13px]">
                           {brand.name}
                         </span>

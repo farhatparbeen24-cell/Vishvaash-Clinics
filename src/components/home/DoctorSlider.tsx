@@ -66,7 +66,6 @@ export function DoctorSlider() {
     >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
         <SectionHeading
-          index="03"
           eyebrow={t.doctors.eyebrow}
           title={
             <>

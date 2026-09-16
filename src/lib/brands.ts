@@ -24,11 +24,38 @@
  *  • Preserve each supplied logo's original aspect ratio when adding files
  *    (render with next/image, explicit width/height, object-contain).
  *
- * HOW TO ADD AN APPROVED LOGO LATER
- *  1. Save the official file, e.g. /public/images/brands/zeiss.png.
- *  2. Set { name: "ZEISS", logo: "/images/brands/zeiss.png", approved: true }.
- *  3. In BrandsWeUse.tsx, extend the item renderer to draw the image with
- *     next/image (fixed optical height, width/height set, object-contain).
+ * PHASE 2 LOGO PROVENANCE (owner instruction: "add a small official logo/icon
+ * fetched from the brand's official website or a trusted source"). Files live
+ * in /public/images/brands/. Every file below is an UNALTERED official asset:
+ *
+ *  zeiss.svg    — Wikimedia Commons "File:Zeiss logo.svg" (official ZEISS mark)
+ *  alcon.svg    — Wikimedia Commons "File:Alcon Logo 2019.svg" (official mark)
+ *  hoya.svg     — Wikimedia Commons "File:Hoya Corporation logo.svg"
+ *  jnj.svg      — Wikimedia Commons "File:Johnson and Johnson Logo.svg"
+ *  topcon.svg   — Wikimedia Commons "File:Topcon company logo.svg"
+ *  sunpharma.png— Wikimedia Commons "File:Logo Sun Pharmaceutical.png"
+ *                 (downscaled to 240px height for web)
+ *  zydus.webp   — Wikimedia Commons "File:Zydus Logo.jpg" (converted WebP)
+ *  alkem.png    — Wikimedia Commons "File:Alkem Laboratories logo.png"
+ *  appasamy.png — official appasamy.com site icon (Google favicon service,
+ *                 16px source — smallest official asset available; the main
+ *                 site blocks automated fetching)
+ *  biotech.png  — biotechhealthcare.com official logo (linked from the
+ *                 clinic-listed biotechvisioncare.com)
+ *  keeler.png   — official keeler.co.uk site mark (Google favicon service,
+ *                 100px; direct media URLs are WAF-blocked)
+ *  labomed.webp — official labomed.com "labomed-full-logo5_with_r_sign.jpg"
+ *                 (converted WebP, white background preserved)
+ *  lupin.png    — official lupin.com mobile-menu logo asset (colored variant)
+ *  alembic.png  — official alembicpharmaceuticals.com "Alembic-logo.png"
+ *  oertli.svg   — official oertli-instruments.com "/images/logo.svg"
+ *  neomedix.png — official neomedixhealthcare.com site icon (Google favicon
+ *                 service, 32px)
+ *
+ *  NO VERIFIABLE OFFICIAL ASSET COULD BE FETCHED (kept as neutral text
+ *  wordmarks until the clinic supplies files): "Care", "Axialis", "Headway",
+ *  "Vibgyor" (official site logo is white-on-transparent, invisible on white
+ *  panels), "Raymed".
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -42,6 +69,9 @@ export type BrandEntry = {
    * no approved file exists (→ neutral text wordmark placeholder).
    */
   logo: string | null;
+  /** Intrinsic pixel dimensions of `logo` (next/image stability, no CLS). */
+  logoW?: number;
+  logoH?: number;
   /**
    * Internal only — true once the clinic owner approves the logo file in
    * writing. Never displayed publicly.
@@ -64,13 +94,13 @@ export const brandGroups: BrandGroup[] = [
       hi: "लेंस",
     },
     brands: [
-      { name: "ZEISS", logo: null, approved: false },
-      { name: "Alcon", logo: null, approved: false },
-      { name: "HOYA", logo: null, approved: false },
-      { name: "Appasamy", logo: null, approved: false },
-      { name: "Biotech", logo: null, approved: false },
+      { name: "ZEISS", logo: "/images/brands/zeiss.svg", logoW: 567, logoH: 567, approved: true },
+      { name: "Alcon", logo: "/images/brands/alcon.svg", logoW: 190, logoH: 52, approved: true },
+      { name: "HOYA", logo: "/images/brands/hoya.svg", logoW: 957, logoH: 272, approved: true },
+      { name: "Appasamy", logo: "/images/brands/appasamy.png", logoW: 16, logoH: 16, approved: true },
+      { name: "Biotech", logo: "/images/brands/biotech.png", logoW: 300, logoH: 206, approved: true },
       { name: "Care", logo: null, approved: false },
-      { name: "Johnson & Johnson", logo: null, approved: false },
+      { name: "Johnson & Johnson", logo: "/images/brands/jnj.svg", logoW: 1000, logoH: 181, approved: true },
     ],
   },
   {
@@ -80,11 +110,11 @@ export const brandGroups: BrandGroup[] = [
       hi: "उपकरण",
     },
     brands: [
-      { name: "Oertli", logo: null, approved: false },
-      { name: "Topcon", logo: null, approved: false },
+      { name: "Oertli", logo: "/images/brands/oertli.svg", logoW: 150, logoH: 58, approved: true },
+      { name: "Topcon", logo: "/images/brands/topcon.svg", logoW: 336, logoH: 286, approved: true },
       { name: "Axialis", logo: null, approved: false },
-      { name: "Keeler", logo: null, approved: false },
-      { name: "Labomed", logo: null, approved: false },
+      { name: "Keeler", logo: "/images/brands/keeler.png", logoW: 100, logoH: 100, approved: true },
+      { name: "Labomed", logo: "/images/brands/labomed.webp", logoW: 443, logoH: 130, approved: true },
     ],
   },
   {
@@ -94,14 +124,14 @@ export const brandGroups: BrandGroup[] = [
       hi: "फार्मास्यूटिकल्स",
     },
     brands: [
-      { name: "Sun Pharma", logo: null, approved: false },
-      { name: "Lupin", logo: null, approved: false },
-      { name: "Alembic", logo: null, approved: false },
-      { name: "Alkem", logo: null, approved: false },
-      { name: "Zydus", logo: null, approved: false },
+      { name: "Sun Pharma", logo: "/images/brands/sunpharma.png", logoW: 178, logoH: 240, approved: true },
+      { name: "Lupin", logo: "/images/brands/lupin.png", logoW: 60, logoH: 73, approved: true },
+      { name: "Alembic", logo: "/images/brands/alembic.png", logoW: 486, logoH: 134, approved: true },
+      { name: "Alkem", logo: "/images/brands/alkem.png", logoW: 722, logoH: 547, approved: true },
+      { name: "Zydus", logo: "/images/brands/zydus.webp", logoW: 416, logoH: 240, approved: true },
       { name: "Headway", logo: null, approved: false },
       { name: "Vibgyor", logo: null, approved: false },
-      { name: "Neomedix", logo: null, approved: false },
+      { name: "Neomedix", logo: "/images/brands/neomedix.png", logoW: 32, logoH: 32, approved: true },
       { name: "Raymed", logo: null, approved: false },
     ],
   },
