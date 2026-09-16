@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    ".next",
+    "skills",
+    "scripts",
+    "tool-results",
+    "download",
+    "assets-excluded",
+    "upload",
+    "mini-services",
+    "examples",
+    "tests"
+  ]
+}
