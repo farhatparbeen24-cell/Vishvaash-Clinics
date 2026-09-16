@@ -81,3 +81,22 @@ Stage Summary:
 - All four Phase 2 workstreams implemented in one integrated update; Phase 1 results byte-preserved (only the files listed above touched).
 - Brand logos: 16/21 live with documented provenance; 5 awaiting verifiable official files (text wordmark fallback).
 - Gallery: +1 genuine owner photo; 9 non-photo uploads deliberately not published (documented above) — owner can override by naming specific files.
+
+---
+Task ID: 5
+Agent: Super Z (main agent)
+Task: Surgical redesign of SECTION 2 — Dental Care only: remove the dark navy banner panel, re-present the section in the exact light editorial system of Section 01 (Eye Care), keep all dental card content unchanged, and add the same front-desk guidance strip below the dental cards. No other page/section/component modified.
+
+Work Log:
+- Before-state captured (qa/p3-before-dental-1280.png: navy banner + 6 cards; p3-before-eye-1280.png for Section 1 baseline).
+- Single file changed: src/components/home/DentalCare.tsx (git status confirms only file modified; translations.ts, Services.tsx, all other files untouched).
+- Banner removal: deleted the rounded-[26px] bg-navy band-grid panel (Smile icon block, dark eyebrow, "Ask About Dental Care" banner button, sand corner glow). band-grid class retained in globals.css — still used by Footer/AppointmentCTA.
+- Section 1 structure mirrored exactly: container mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24 (was py-4/lg:py-8); SectionHeading with index="02", eyebrow=t.dental.eyebrow, title=titleA + accent-italic(titleAccent) (same accent treatment as 01, minus the dark-theme text-aqua override), lede=t.dental.body — all existing dental copy reused verbatim, nothing rewritten.
+- Cards untouched in content: same 6 dentalServices, same dentalIconMap (Syringe/Anchor/Sparkles/Layers/AlignCenter/ShieldPlus, Smile fallback), same tile markup (rounded-2xl border-line bg-white p-6, h-12 w-12 aqua icon, font-display title, ink-soft blurb), same ServiceCta → DEFAULT_DOCTOR_ID (Dr. Himanshu Arora pre-selected per standing owner instruction). Grid mt-8→mt-12 to match 01's heading→cards rhythm; kept sm:2/lg:3 (balanced 2×3 for 6 items; 4-col would orphan 2 cards).
+- Front-desk strip added below cards, markup class-identical to Eye strip (mt-10 rounded-2xl border-aqua-deep/60 bg-aqua/45, WhatsApp Us bg-wa + Call Clinic white pill, PhoneCall/WhatsAppIcon treatment, sm:flex-row stacking). Wording: reuses t.services.stripQ/stripA ("Not sure which consultation you need? Describe your concern — the front desk will guide you.") — the exact requested sentence, shared keys so EN+HI wording is identical for BOTH eye-care and dental-care visitors (HI: "पता नहीं कि आपको कौन-सा परामर्श चाहिए? अपनी समस्या बताएं — फ्रंट डेस्क आपका मार्गदर्शन करेगा।"). WhatsApp link = t.wa.quick.notSure; Call = clinic.phoneHref (+91 72529 91991).
+- Verified: tsc clean (src), eslint clean; Section 1 pixel-diff before/after = 0 strong-diff pixels (sub-AA noise only) + dentalTop byte-identical 1661.53125 (layout above dental unchanged); strip text exact, wa.me/917252991991 + tel: links intact; dental CTA E2E → modal opens with Dr. Himanshu Arora panel (Dr. Shruti in switcher); EN⇄HI correct (02 दंत चिकित्सा eyebrow, HI title/strip); overflow sweep 360/390/412/768/1280/1440 = zero horizontal overflow; console clean.
+- Note: t.cta.askDental / t.wa.quick.dental translation keys became unreferenced by design (banner button retired in favour of the shared strip per spec); keys left in translations.ts untouched — no cleanup performed.
+- Screenshots: qa/p3-before-dental-1280.png, p3-after-dental-1280.png (new heading), p3-after-dental-strip-1280.png, p3-after-dental-390.png, p3-after-dental-strip-390.png, p3-before/after-eye-1280.png (Section 1 identity proof).
+
+Stage Summary:
+- Section 2 now reads as the next section of the exact Section 01 design system: light editorial heading (02), identical card tiles, identical front-desk strip; dark panel gone; all dental content, CTAs, booking flow, WhatsApp/phone links and every other section byte-preserved.

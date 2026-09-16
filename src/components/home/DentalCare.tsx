@@ -2,20 +2,22 @@
 
 import {
   Smile,
-  MessageCircleQuestion,
   Syringe,
   Anchor,
   Sparkles,
   Layers,
   AlignCenter,
   ShieldPlus,
+  PhoneCall,
 } from "lucide-react";
 import { clinic } from "@/lib/clinic";
 import { DEFAULT_DOCTOR_ID } from "@/lib/doctors";
 import { waLink } from "@/lib/whatsapp";
 import { useLanguage } from "@/components/language/LanguageProvider";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { ServiceCta } from "./ServiceCta";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 
 const dentalIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Syringe,
@@ -27,12 +29,20 @@ const dentalIconMap: Record<string, React.ComponentType<{ className?: string }>>
 };
 
 /**
- * Dental Care — restrained banner + six dental service cards (Phase 2).
+ * Dental Care — six dental service cards in the same light editorial system
+ * as the Eye Care section (Section 01).
  *
- * • The banner keeps the verified, claim-free section copy (unchanged).
- * • The card grid mirrors the Eye Care card style exactly (same tile, icon
- *   treatment, typography and "Request Consultation" CTA) with the six
- *   owner-supplied dental services rendered verbatim.
+ * • The previous dark banner panel is removed; the section heading uses the
+ *   same SectionHeading pattern as Section 01 (same index/eyebrow treatment,
+ *   typography hierarchy, spacing and alignment) with the existing verified
+ *   dental copy presented unchanged.
+ * • The card grid keeps the Eye Care tile style exactly (same borders,
+ *   radius, padding, icon treatment, typography and "Request Consultation"
+ *   CTA) with the six owner-supplied dental services rendered verbatim.
+ * • Below the cards sits the same front-desk guidance strip used by the Eye
+ *   Care section — shared strip copy (t.services.stripQ/stripA) so the
+ *   wording applies to BOTH eye-care and dental-care visitors — with the
+ *   same WhatsApp Us / Call Clinic buttons and icon treatment.
  * • Card CTAs open the same appointment popup with the clinic's default
  *   doctor (Dr. Himanshu Arora) pre-selected, per owner instruction — the
  *   in-popup switcher lets the visitor choose Dr. Shruti Beri Arora in one
@@ -42,50 +52,22 @@ export function DentalCare() {
   const { t } = useLanguage();
   return (
     <section id="dental-care" aria-label={t.dental.ariaLabel} className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:py-8">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[26px] border border-line bg-navy band-grid">
-            {/* Warm corner glow */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-sand/15 blur-3xl"
-            />
-            <div className="relative grid gap-8 p-8 sm:p-12 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10">
-              <span className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-aqua/10 text-aqua ring-1 ring-aqua/25">
-                <Smile className="h-8 w-8" aria-hidden />
-              </span>
-              <div className="max-w-2xl">
-                <p className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-sand">
-                  {/* Section number — editorial index (02) matching SectionHeading */}
-                  <span aria-hidden className="font-display text-sm tracking-normal">
-                    02
-                  </span>
-                  <span aria-hidden className="h-px w-8 bg-sand/40" />
-                  {t.dental.eyebrow}
-                </p>
-                <h2 className="font-display mt-3 text-2xl leading-snug text-offwhite sm:text-3xl">
-                  {t.dental.titleA}{" "}
-                  <span className="accent-italic text-aqua">{t.dental.titleAccent}</span>
-                </h2>
-                <p className="mt-4 text-[15px] leading-relaxed text-aqua/75">
-                  {t.dental.body}
-                </p>
-              </div>
-              <a
-                href={waLink(t.wa.quick.dental)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[52px] shrink-0 items-center justify-center gap-2 rounded-full bg-aqua px-6 text-center text-[15px] font-bold text-navy transition hover:bg-white"
-              >
-                <MessageCircleQuestion className="h-5 w-5 shrink-0" aria-hidden />
-                {t.cta.askDental}
-              </a>
-            </div>
-          </div>
-        </Reveal>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        {/* Section heading — same pattern as Section 01 (Eye Care) */}
+        <SectionHeading
+          index="02"
+          eyebrow={t.dental.eyebrow}
+          title={
+            <>
+              {t.dental.titleA}{" "}
+              <span className="accent-italic">{t.dental.titleAccent}</span>
+            </>
+          }
+          lede={t.dental.body}
+        />
 
         {/* Six dental service cards — same tile style as the Eye Care grid */}
-        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {clinic.dentalServices.map((service, i) => {
             const Icon = dentalIconMap[service.icon] ?? Smile;
             const copy = t.dental.items[i] ?? {
@@ -116,6 +98,34 @@ export function DentalCare() {
             );
           })}
         </ul>
+
+        {/* Post-services front-desk strip — same as the Eye Care section */}
+        <Reveal delay={120}>
+          <div className="mt-10 flex flex-col items-start justify-between gap-4 rounded-2xl border border-aqua-deep/60 bg-aqua/45 px-6 py-5 sm:flex-row sm:items-center">
+            <p className="text-[15px] font-medium text-navy">
+              {t.services.stripQ}{" "}
+              <span className="text-ink-soft">{t.services.stripA}</span>
+            </p>
+            <div className="flex shrink-0 flex-wrap gap-3">
+              <a
+                href={waLink(t.wa.quick.notSure)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-wa px-5 text-sm font-semibold text-white transition hover:bg-wa-deep"
+              >
+                <WhatsAppIcon className="h-4 w-4" />
+                {t.cta.whatsappUs}
+              </a>
+              <a
+                href={clinic.phoneHref}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-navy/25 bg-white px-5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-offwhite"
+              >
+                <PhoneCall className="h-4 w-4" aria-hidden />
+                {t.cta.callClinic}
+              </a>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
