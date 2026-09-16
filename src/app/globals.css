@@ -9,6 +9,10 @@
   --color-navy: #0b2b40;
   --color-navy-deep: #081f30;
   --color-navy-hover: #144563;
+  /* Royal blue — approved header/navigation colour only (client ref
+     ~#1428A0). Not used anywhere else on the site. */
+  --color-royal: #1428a0;
+  --color-royal-deep: #0e1c7e;
   --color-sand: #d9772a;
   --color-sand-deep: #b85f1e;
   --color-trust: #d9772a; /* legacy token name — now maps to the orange accent */

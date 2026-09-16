@@ -116,11 +116,11 @@ export const clinic = {
         "Consultation and guidance for cataract-related vision concerns, with clear next steps explained by the care team.",
     },
     {
-      slug: "dry-eye-care",
-      icon: "Droplets",
-      title: "Dry Eye Care",
+      slug: "glaucoma-care",
+      icon: "Stethoscope",
+      title: "Glaucoma Care",
       blurb:
-        "Assessment and supportive care for dry, irritated or tired-feeling eyes, tailored to your daily routine.",
+        "Early detection, monitoring and medical and surgical management of glaucoma.",
     },
     {
       slug: "comprehensive-eye-examination",

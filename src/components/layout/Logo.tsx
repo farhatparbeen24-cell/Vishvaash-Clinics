@@ -18,12 +18,12 @@ const NAVY = "#0B2B40";
 const OFFWHITE = "#F8FBFC";
 const ORANGE = "#D9772A";
 
-function MonogramMark({ stroke }: { stroke: string }) {
+function MonogramMark({ stroke, className }: { stroke: string; className?: string }) {
   return (
     <svg
       aria-hidden
       viewBox="34.3 37.3 247.4 161.4"
-      className="h-10 w-auto shrink-0"
+      className={cn("w-auto shrink-0", className)}
       fill="none"
     >
       {/* V — dominant letterform; bevel apex, confident flat terminals */}
@@ -64,23 +64,42 @@ function MonogramMark({ stroke }: { stroke: string }) {
 export function Logo({
   tone = "dark",
   compact = false,
+  variant = "default",
   className,
 }: {
   tone?: "dark" | "light";
   compact?: boolean;
+  /**
+   * Presentation variant only — the artwork is identical in every variant.
+   * "header" renders the approved lockup larger/tighter inside the header
+   * ribbon for readability (client-approved display refinement); "default"
+   * keeps the original sizing used everywhere else (e.g. footer).
+   */
+  variant?: "default" | "header";
   className?: string;
 }) {
   const { t } = useLanguage();
   const light = tone === "light";
+  const header = variant === "header";
   return (
-    <span className={cn("inline-flex items-center gap-3", className)}>
-      <MonogramMark stroke={light ? OFFWHITE : NAVY} />
+    <span
+      className={cn(
+        "inline-flex items-center gap-3",
+        header && "gap-2.5 sm:gap-3",
+        className
+      )}
+    >
+      <MonogramMark
+        stroke={light ? OFFWHITE : NAVY}
+        className={header ? "h-12 sm:h-[52px]" : "h-10"}
+      />
       {/* Wordmark */}
       {!compact && (
         <span className="flex flex-col leading-none">
           <span
             className={cn(
-              "whitespace-nowrap font-display text-[19px] font-semibold tracking-[-0.01em]",
+              "whitespace-nowrap font-display font-semibold tracking-[-0.01em]",
+              header ? "text-[22px] sm:text-[24px]" : "text-[19px]",
               light ? "text-offwhite" : "text-navy"
             )}
           >
@@ -88,8 +107,11 @@ export function Logo({
           </span>
           <span
             className={cn(
-              "mt-1 text-[10px] font-bold uppercase tracking-[0.24em]",
-              light ? "text-aqua/75" : "text-sand-deep"
+              "mt-1 font-bold uppercase",
+              header
+                ? "text-[11px] tracking-[0.2em] sm:text-[11.5px]"
+                : "text-[10px] tracking-[0.24em]",
+              light ? (header ? "text-offwhite/85" : "text-aqua/75") : "text-sand-deep"
             )}
           >
             {t.brand.descriptor}

@@ -136,7 +136,7 @@ const en = {
   services: {
     ariaLabel: "Eye care services",
     eyebrow: "Eye Care Services",
-    titleA: "Considered care for",
+    titleA: "Empathetic and compassionate care for",
     titleAccent: "every eye",
     titleB: "that walks in.",
     lede: "Four core consultation categories, explained simply — so you know what to ask for when you contact the front desk.",
@@ -148,9 +148,9 @@ const en = {
           "Consultation and guidance for cataract-related vision concerns, with clear next steps explained by the care team.",
       },
       {
-        title: "Dry Eye Care",
+        title: "Glaucoma Care",
         blurb:
-          "Assessment and supportive care for dry, irritated or tired-feeling eyes, tailored to your daily routine.",
+          "Early detection, monitoring and medical and surgical management of glaucoma.",
       },
       {
         title: "Comprehensive Eye Examination",
@@ -633,7 +633,7 @@ const hi: Dictionary = {
   services: {
     ariaLabel: "नेत्र देखभाल सेवाएँ",
     eyebrow: "नेत्र देखभाल सेवाएँ",
-    titleA: "हर उस आँख की सोच-समझकर देखभाल,",
+    titleA: "हर उस आँख के लिए सहानुभूतिपूर्ण और करुणामय देखभाल,",
     titleAccent: "जो हमारे पास आती है।",
     titleB: "",
     lede: "चार मुख्य परामर्श श्रेणियाँ, आसान भाषा में — ताकि फ्रंट डेस्क से बात करते समय आपको पता हो कि क्या पूछना है।",
@@ -645,9 +645,9 @@ const hi: Dictionary = {
           "मोतियाबिंद से जुड़ी दृष्टि समस्याओं के लिए परामर्श और मार्गदर्शन — देखभाल टीम आगे के कदम स्पष्ट रूप से समझाती है।",
       },
       {
-        title: "ड्राई आई देखभाल",
+        title: "ग्लूकोमा देखभाल",
         blurb:
-          "शुष्क, जलन वाली या थकी हुई आँखों की जाँच और सहायक देखभाल — आपकी दिनचर्या के अनुसार।",
+          "ग्लूकोमा का शुरुआती पता लगाना, निगरानी, तथा चिकित्सकीय एवं शल्य उपचार द्वारा प्रबंधन।",
       },
       {
         title: "पूर्ण नेत्र जांच",

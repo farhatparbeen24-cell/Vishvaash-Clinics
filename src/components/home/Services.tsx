@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Eye, Droplets, ScanEye, Siren, PhoneCall } from "lucide-react";
+import { Eye, ScanEye, Siren, Stethoscope, PhoneCall } from "lucide-react";
 import { clinic } from "@/lib/clinic";
 import { doctorIdByDepartment } from "@/lib/doctors";
 import { useLanguage } from "@/components/language/LanguageProvider";
@@ -13,8 +13,8 @@ import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Eye,
-  Droplets,
   ScanEye,
+  Stethoscope,
   Siren,
 };
 
@@ -34,7 +34,7 @@ export function Services() {
             title={
               <>
                 {t.services.titleA}{" "}
-                <span className="accent-italic">{t.services.titleAccent}</span>
+                <span className="accent-italic">{t.services.titleAccent}</span>{" "}
                 {t.services.titleB}
               </>
             }

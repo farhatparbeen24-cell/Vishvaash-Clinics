@@ -51,8 +51,8 @@ export function Header() {
       className={cn(
         "sticky top-0 z-50 border-b transition-all duration-300",
         scrolled || menuOpen
-          ? "border-line bg-offwhite/92 shadow-[0_8px_30px_-18px_rgba(11,43,64,0.35)] backdrop-blur-md"
-          : "border-transparent bg-offwhite/70 backdrop-blur-sm"
+          ? "border-white/15 bg-royal shadow-[0_8px_30px_-18px_rgba(8,15,60,0.55)]"
+          : "border-transparent bg-royal"
       )}
     >
       <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -61,7 +61,7 @@ export function Header() {
           className="rounded-lg"
           aria-label={`${clinic.name} — back to top`}
         >
-          <Logo />
+          <Logo tone="light" variant="header" />
         </a>
 
         {/* Desktop nav */}
@@ -70,7 +70,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-3.5 py-2 text-[14px] font-semibold text-ink-soft transition hover:bg-aqua/60 hover:text-navy"
+              className="rounded-full px-3.5 py-2 text-[14px] font-semibold text-offwhite/90 transition hover:bg-white/15 hover:text-white"
             >
               {navLabel(link.key)}
             </a>
@@ -86,7 +86,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => openAppointmentModal()}
-            className="hidden min-h-[44px] items-center gap-2 rounded-full bg-navy px-5 text-sm font-semibold text-offwhite shadow-[0_10px_24px_-12px_rgba(11,43,64,0.55)] transition hover:bg-navy-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-sand sm:inline-flex"
+            className="hidden min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-royal shadow-[0_10px_24px_-12px_rgba(8,15,60,0.65)] transition hover:bg-offwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-royal sm:inline-flex"
           >
             <CalendarCheck className="h-4 w-4 text-sand" aria-hidden />
             {t.cta.bookAppointment}
@@ -94,7 +94,7 @@ export function Header() {
 
           {/* Mobile menu toggle */}
           <button
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-navy transition hover:bg-aqua lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/10 text-white transition hover:bg-white/20 lg:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
