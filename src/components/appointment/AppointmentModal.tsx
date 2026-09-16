@@ -111,7 +111,9 @@ export function AppointmentModal({
   const departmentLabel =
     doctor.department === "Eye Care"
       ? t.doctors.departments.eye
-      : t.doctors.departments.dental;
+      : doctor.department === "Dental Care"
+        ? t.doctors.departments.dental
+        : t.doctors.departments.visiting;
   const doctorText = t.doctors.people[doctor.id];
 
   return createPortal(
@@ -172,7 +174,7 @@ export function AppointmentModal({
                   {doctor.name}
                 </p>
                 <p className="mt-0.5 text-[13px] font-medium text-white/85">
-                  {doctorText.specialty}
+                  {doctorText.role}
                 </p>
               </figcaption>
             </figure>
@@ -208,7 +210,9 @@ export function AppointmentModal({
                       const dLabel =
                         d.department === "Eye Care"
                           ? t.doctors.departments.eye
-                          : t.doctors.departments.dental;
+                          : d.department === "Dental Care"
+                            ? t.doctors.departments.dental
+                            : t.doctors.departments.visiting;
                       const dSize = doctorImageSize[d.id];
                       return (
                         <button

@@ -48,6 +48,23 @@ function todayLocalISO(): string {
 }
 
 /**
+ * Client-side anti-bot challenge (Phase 3): a small random arithmetic
+ * question, e.g. "7 + 4 = ?" or "12 − 5 = ?". Subtraction is always
+ * arranged non-negative. No backend, no third-party service, no tracking —
+ * the answer is checked locally and an incorrect answer never opens the
+ * WhatsApp deep link.
+ */
+type Captcha = { a: number; b: number; op: "+" | "-"; answer: number };
+
+function makeCaptcha(): Captcha {
+  const op: Captcha["op"] = Math.random() < 0.5 ? "+" : "-";
+  let a = Math.floor(Math.random() * 12) + 1; // 1…12
+  let b = Math.floor(Math.random() * 12) + 1; // 1…12
+  if (op === "-" && b > a) [a, b] = [b, a];
+  return { a, b, op, answer: op === "+" ? a + b : a - b };
+}
+
+/**
  * Doctor-aware appointment request form (rendered inside AppointmentModal).
  *
  * • The service dropdown lists ONLY the selected doctor's own serviceOptions.
@@ -73,6 +90,11 @@ export function AppointmentForm({
   const [showFallback, setShowFallback] = useState(false);
   const [fallbackUrl, setFallbackUrl] = useState<string>("");
   const [minDate, setMinDate] = useState<string>("");
+  // Security check — a fresh challenge is generated on every mount (i.e.
+  // every time the booking modal opens) and after every incorrect answer.
+  const [captcha, setCaptcha] = useState<Captcha>(() => makeCaptcha());
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+  const [captchaError, setCaptchaError] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
 
   // Compute "today" on the client so the picker always blocks past dates in
@@ -167,6 +189,19 @@ export function AppointmentForm({
       return;
     }
 
+    // Security check — the WhatsApp deep link below is unreachable unless
+    // the arithmetic answer is correct. An incorrect or empty answer shows
+    // the error, clears the input and generates a FRESH challenge.
+    const given = captchaAnswer.trim();
+    if (!/^\d+$/.test(given) || Number.parseInt(given, 10) !== captcha.answer) {
+      setCaptchaError(true);
+      setCaptcha(makeCaptcha());
+      setCaptchaAnswer("");
+      document.getElementById("field-captcha")?.focus();
+      return;
+    }
+    setCaptchaError(false);
+
     // Locale-aware pre-filled message incl. the selected doctor + department;
     // same number, same routing, same patient-entered data.
     const url = appointmentWhatsAppUrl(
@@ -211,6 +246,9 @@ export function AppointmentForm({
     setErrors({});
     setStatus("idle");
     setShowFallback(false);
+    setCaptcha(makeCaptcha());
+    setCaptchaAnswer("");
+    setCaptchaError(false);
     nameRef.current?.focus();
   };
 
@@ -430,6 +468,46 @@ export function AppointmentForm({
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep" aria-hidden />
         {t.form.privacyNote}
       </p>
+
+      {/* Security check (client-side anti-bot) — immediately above submit */}
+      <div className="mt-5">
+        <label htmlFor="field-captcha" className="mb-1.5 block text-sm font-bold text-navy">
+          {t.form.captchaLabel} <span className="text-destructive" aria-hidden>*</span>
+        </label>
+        <div
+          role="group"
+          aria-label={t.form.captchaLabel}
+          className="flex items-center gap-3"
+        >
+          <span
+            aria-hidden
+            className="inline-flex min-h-[52px] select-none items-center rounded-xl border border-line bg-offwhite px-4 font-display text-lg font-semibold tracking-wide text-navy"
+          >
+            {captcha.a} {captcha.op === "+" ? "+" : "−"} {captcha.b} = ?
+          </span>
+          <input
+            id="field-captcha"
+            name="captcha"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            placeholder={t.form.captchaPlaceholder}
+            value={captchaAnswer}
+            onChange={(e) => {
+              setCaptchaAnswer(e.target.value.replace(/\D/g, ""));
+              if (captchaError) setCaptchaError(false);
+            }}
+            aria-invalid={captchaError}
+            aria-describedby={captchaError ? "error-captcha" : undefined}
+            className={cn(inputBase, "max-w-[150px]", captchaError ? inputErr : inputOk)}
+          />
+        </div>
+        {captchaError && (
+          <p id="error-captcha" role="alert" className="mt-1.5 text-[13px] font-medium text-destructive">
+            {t.form.errors.captcha}
+          </p>
+        )}
+      </div>
 
       {/* Submit */}
       <button

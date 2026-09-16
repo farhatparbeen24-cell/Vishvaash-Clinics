@@ -1,62 +1,229 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { CalendarCheck, ChevronLeft, ChevronRight, GraduationCap } from "lucide-react";
-import { clinic } from "@/lib/clinic";
+import {
+  Award,
+  BadgeCheck,
+  Building2,
+  CalendarCheck,
+  CalendarClock,
+  Clock,
+  GraduationCap,
+} from "lucide-react";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import { useAppointment } from "@/components/appointment/AppointmentProvider";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import {
-  clinicDoctors,
+  CORE_DOCTORS,
+  VISITING_DOCTORS,
   doctorImageSize,
   type ClinicDoctor,
 } from "@/lib/doctors";
 import { cn } from "@/lib/utils";
 
-const SWIPE_THRESHOLD = 48;
-
 /**
- * Homepage doctor slider — two synchronized slides, one shared source of
- * truth. The active doctor lives in AppointmentProvider (`activeDoctorId`);
- * navigating the slider updates it, so the appointment popup always opens
- * with the doctor currently on screen.
+ * Homepage "Meet the Doctors" section — Phase 3 rebuild.
  *
- * • Doctor surfaces show the clinic's original owner-verified portraits
- *   (lib/doctors.ts) — never in the generic service hero, never stock or
- *   AI-generated stand-ins. Face-safe object-position, stable aspect ratio.
- * • Manual controls: arrows, accessible dots, touch swipe, arrow keys.
- *   No autoplay — the visitor stays in control.
- * • Captions sit on a controlled gradient at the panel's bottom edge.
- *   Works in English and हिंदी.
+ * Two subsections in a single section, in this exact order:
+ *   A. Core Doctors        — Dr. Himanshu Arora, Dr. Shruti Beri Arora
+ *   B. Visiting Specialists — Dr. Shalabh Aggarwal, Dr. Akshay Rawat
+ *
+ * • One shared card design for all four doctors: same portrait framing
+ *   (aspect-ratio-stable, face-safe object-position), same typography,
+ *   spacing, hover behaviour and CTA. Two cards per row on desktop,
+ *   clean stack on mobile (no clipping, no horizontal scroll).
+ * • The section keeps its existing main heading and carries NO section
+ *   number (the numbered scheme covers the seven content sections only).
+ * • Every card CTA opens the shared appointment popup with THAT doctor
+ *   pre-selected; requests go only to the clinic's common WhatsApp number.
+ * • Portraits are the clinic's approved Phase 3 photographs (lib/doctors.ts
+ *   rule 2) — real, owner-supplied, non-destructively transcoded; never
+ *   AI-generated, never stock.
  */
+
+/** Department/visiting pill label for a doctor, per language. */
+function useDoctorBadgeLabel() {
+  const { t } = useLanguage();
+  return (d: ClinicDoctor) => {
+    if (d.department === "Eye Care") return t.doctors.departments.eye;
+    if (d.department === "Dental Care") return t.doctors.departments.dental;
+    return t.doctors.departments.visiting;
+  };
+}
+
+function DoctorCard({
+  doctor,
+  delay,
+}: {
+  doctor: ClinicDoctor;
+  delay: number;
+}) {
+  const { t } = useLanguage();
+  const { openAppointmentModal } = useAppointment();
+  const badgeLabel = useDoctorBadgeLabel()(doctor);
+  const text = t.doctors.people[doctor.id];
+  const size = doctorImageSize[doctor.id];
+  const isVisiting = doctor.group === "visiting";
+
+  return (
+    <Reveal as="li" delay={delay} className="h-full">
+      <article
+        className={cn(
+          "group flex h-full flex-col overflow-hidden rounded-[24px] border border-line bg-white",
+          "transition-all duration-300 hover:-translate-y-1 hover:border-sand/40",
+          "hover:shadow-[0_24px_48px_-28px_rgba(11,43,64,0.35)]"
+        )}
+      >
+        {/* Portrait — approved Phase 3 photograph, uniform face-safe framing.
+            Fixed aspect ratio keeps every card equal-height and undistorted;
+            object-cover with object-position ≈ 50% 20% never crops a face. */}
+        <figure className="relative aspect-[4/5] overflow-hidden bg-navy sm:aspect-[5/4] lg:aspect-[4/5]">
+          <Image
+            src={doctor.image}
+            alt={doctor.alt}
+            width={size.width}
+            height={size.height}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 576px"
+            loading="lazy"
+            className="h-full w-full object-cover object-[50%_20%]"
+          />
+          {/* Badge — department for core doctors, "Visiting Specialist" for
+              visiting specialists; same pill style across all four cards. */}
+          <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-navy-deep shadow-sm">
+            {badgeLabel}
+          </span>
+        </figure>
+
+        {/* Content — identical structure and rhythm on all four cards */}
+        <div className="flex flex-1 flex-col p-6 sm:p-7">
+          <h4 className="font-display text-2xl leading-tight text-navy">
+            {doctor.name}
+          </h4>
+          <p className="mt-1.5 text-[13px] font-bold uppercase tracking-[0.12em] text-sand-deep">
+            {text.role}
+          </p>
+          {text.focus && (
+            <p className="mt-1 text-sm font-medium text-ink-soft">
+              {text.focus}
+            </p>
+          )}
+
+          {/* Credentials — verbatim approved facts only */}
+          <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-ink">
+            <li className="flex items-start gap-2.5">
+              <GraduationCap
+                className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                aria-hidden
+              />
+              <span>
+                <span className="sr-only">{t.doctors.cardLabels.qualifications}: </span>
+                {doctor.qualifications}
+              </span>
+            </li>
+            {text.credentialLine && (
+              <li className="flex items-start gap-2.5">
+                <Award className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep" aria-hidden />
+                <span>{text.credentialLine}</span>
+              </li>
+            )}
+            {doctor.registration && (
+              <li className="flex items-start gap-2.5">
+                <BadgeCheck
+                  className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                  aria-hidden
+                />
+                <span>
+                  <span className="sr-only">{t.doctors.cardLabels.registration}: </span>
+                  {t.doctors.regPrefix} {doctor.registration}
+                </span>
+              </li>
+            )}
+            {doctor.clinic && (
+              <li className="flex items-start gap-2.5">
+                <Building2
+                  className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                  aria-hidden
+                />
+                <span>
+                  <span className="sr-only">{t.doctors.cardLabels.clinic}: </span>
+                  {doctor.clinic}
+                </span>
+              </li>
+            )}
+          </ul>
+
+          {/* Visiting hours — labelled rows, same styling on both specialists */}
+          {(text.hours || text.saturday) && (
+            <dl className="mt-4 space-y-2 rounded-xl bg-offwhite p-4 text-sm">
+              {text.hours && (
+                <div className="flex items-start gap-2.5">
+                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep" aria-hidden />
+                  <div>
+                    <dt className="sr-only">{t.doctors.cardLabels.consultingHours}</dt>
+                    <dd>
+                      <span className="font-bold text-navy">
+                        {t.doctors.cardLabels.consultingHours}:{" "}
+                      </span>
+                      <span className="text-ink">{text.hours}</span>
+                    </dd>
+                  </div>
+                </div>
+              )}
+              {text.saturday && (
+                <div className="flex items-start gap-2.5">
+                  <CalendarClock
+                    className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep"
+                    aria-hidden
+                  />
+                  <div>
+                    <dt className="sr-only">{t.doctors.cardLabels.availability}</dt>
+                    <dd>
+                      <span className="font-bold text-navy">
+                        {t.doctors.cardLabels.availability}:{" "}
+                      </span>
+                      <span className="text-ink">{text.saturday}</span>
+                    </dd>
+                  </div>
+                </div>
+              )}
+            </dl>
+          )}
+
+          {/* CTA — same style as the existing doctor-card CTA; opens the
+              shared booking popup with THIS doctor pre-selected */}
+          <div className="mt-auto pt-6">
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => openAppointmentModal(doctor.id)}
+              aria-label={`${t.cta.scheduleVisit}: ${doctor.name}`}
+              className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-sand px-6 text-[15px] font-bold text-navy-deep shadow-[0_14px_28px_-14px_rgba(217,119,42,0.9)] transition hover:bg-[#e08a3c] focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            >
+              <CalendarCheck className="h-4.5 w-4.5" aria-hidden />
+              {t.cta.scheduleVisit}
+            </button>
+          </div>
+        </div>
+      </article>
+    </Reveal>
+  );
+}
+
+function SubsectionHeading({ label }: { label: string }) {
+  return (
+    <h3
+      aria-hidden
+      className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-trust"
+    >
+      <span className="h-px w-8 bg-trust/40" />
+      {label}
+    </h3>
+  );
+}
+
 export function DoctorSlider() {
   const { t } = useLanguage();
-  const { activeDoctorId, setActiveDoctor, openAppointmentModal } =
-    useAppointment();
-  const touchStartX = useRef<number | null>(null);
-  const [announce, setAnnounce] = useState("");
-
-  const total = clinicDoctors.length;
-  const index = Math.max(
-    0,
-    clinicDoctors.findIndex((d) => d.id === activeDoctorId)
-  );
-  const doctor: ClinicDoctor = clinicDoctors[index] ?? clinicDoctors[0];
-  const doctorText = t.doctors.people[doctor.id];
-
-  const goTo = (next: number) => {
-    const clamped = ((next % total) + total) % total;
-    const target = clinicDoctors[clamped];
-    setActiveDoctor(target.id);
-    setAnnounce(t.doctors.liveRegion(clamped + 1, total, target.name));
-  };
-
-  const departmentLabel =
-    doctor.department === "Eye Care"
-      ? t.doctors.departments.eye
-      : t.doctors.departments.dental;
 
   return (
     <section
@@ -65,6 +232,7 @@ export function DoctorSlider() {
       className="scroll-mt-24 border-y border-line bg-white"
     >
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        {/* Existing main heading — unchanged; no section number */}
         <SectionHeading
           eyebrow={t.doctors.eyebrow}
           title={
@@ -75,192 +243,30 @@ export function DoctorSlider() {
           }
         />
 
-        <Reveal delay={100}>
-          <div
-            role="region"
-            aria-roledescription="carousel"
-            aria-label={t.doctors.ariaLabel}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowLeft") {
-                e.preventDefault();
-                goTo(index - 1);
-              } else if (e.key === "ArrowRight") {
-                e.preventDefault();
-                goTo(index + 1);
-              }
-            }}
-            onTouchStart={(e) => {
-              touchStartX.current = e.touches[0]?.clientX ?? null;
-            }}
-            onTouchEnd={(e) => {
-              if (touchStartX.current === null) return;
-              const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
-              touchStartX.current = null;
-              if (Math.abs(dx) >= SWIPE_THRESHOLD) {
-                goTo(dx < 0 ? index + 1 : index - 1);
-              }
-            }}
-            className="mt-10 outline-none"
-          >
-            {/* Track — both slides always rendered: stable height, no CLS */}
-            <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_30px_60px_-38px_rgba(11,43,64,0.5)]">
-              <div
-                className={cn(
-                  "flex transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] touch-pan-y"
-                )}
-                style={{ transform: `translateX(-${index * 100}%)` }}
-              >
-                {clinicDoctors.map((d, i) => {
-                  const text = t.doctors.people[d.id];
-                  const dLabel =
-                    d.department === "Eye Care"
-                      ? t.doctors.departments.eye
-                      : t.doctors.departments.dental;
-                  const size = doctorImageSize[d.id];
-                  const active = i === index;
-                  return (
-                    <article
-                      key={d.id}
-                      aria-hidden={!active}
-                      inert={!active}
-                      className="grid w-full shrink-0 sm:grid-cols-[0.88fr_1.12fr]"
-                    >
-                      {/* Portrait — the clinic's original owner-verified photo.
-                          Fixed aspect ratios keep layout stable; object-cover
-                          with a face-safe position (never crops the face). */}
-                      <figure className="relative h-72 overflow-hidden bg-navy sm:h-auto sm:min-h-[500px]">
-                        <Image
-                          src={d.image}
-                          alt={d.alt}
-                          width={size.width}
-                          height={size.height}
-                          sizes="(max-width: 640px) 100vw, 40vw"
-                          loading={i === 0 ? "eager" : "lazy"}
-                          className="h-72 w-full object-cover object-[50%_18%] sm:absolute sm:inset-0 sm:h-full sm:w-full"
-                        />
-                        {/* Controlled caption scrim — legible text over the
-                            lower gradient band only */}
-                        <div
-                          aria-hidden
-                          className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-navy-deep via-navy/72 to-transparent"
-                        />
-                        {/* Caption — bottom edge only */}
-                        <figcaption className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-sand px-3 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-navy-deep">
-                            {dLabel}
-                          </span>
-                          <p className="font-display mt-2 text-2xl leading-tight text-white sm:text-[1.7rem]">
-                            {d.name}
-                          </p>
-                          <p className="mt-0.5 text-[13px] font-medium text-white/85">
-                            {text.specialty}
-                          </p>
-                        </figcaption>
-                      </figure>
+        {/* A. Core Doctors */}
+        <div className="mt-12">
+          <Reveal>
+            <SubsectionHeading label={t.doctors.coreLabel} />
+          </Reveal>
+          <ul className="mt-6 grid gap-6 sm:grid-cols-2">
+            {CORE_DOCTORS.map((d, i) => (
+              <DoctorCard key={d.id} doctor={d} delay={i * 90} />
+            ))}
+          </ul>
+        </div>
 
-                      {/* Content */}
-                      <div className="flex flex-col justify-center p-6 sm:p-10">
-                        <p className="text-sm font-bold uppercase tracking-[0.16em] text-sand-deep">
-                          {dLabel} · {clinic.shortName}
-                        </p>
-                        <p className="mt-4 text-[15px] leading-relaxed text-ink-soft sm:text-base">
-                          {text.shortDescription}
-                        </p>
-
-                        {/* The same options the popup dropdown will show */}
-                        <ul className="mt-5 flex flex-wrap gap-2" aria-label={t.form.labels.service}>
-                          {d.serviceOptions.map((s) => {
-                            const key =
-                              clinic.form.serviceOptions.find(
-                                (o) => o.value === s
-                              )?.key ?? "other";
-                            return (
-                              <li
-                                key={s}
-                                className="rounded-full border border-line bg-offwhite px-3 py-1.5 text-[12px] font-semibold text-ink-soft"
-                              >
-                                {t.form.serviceOptionLabels[key]}
-                              </li>
-                            );
-                          })}
-                        </ul>
-
-                        <div className="mt-7 flex flex-wrap items-center gap-4">
-                          {/* Primary slide CTA — clinic-approved exact wording,
-                              identical on BOTH slides. Orange #D9772A with
-                              navy-deep text (5.3:1 contrast, WCAG AA); hover
-                              lightens the orange and keeps navy-deep text
-                              (6.3:1). Opens the popup for THIS slide's doctor. */}
-                          <button
-                            type="button"
-                            aria-haspopup="dialog"
-                            onClick={() => openAppointmentModal(d.id)}
-                            className="inline-flex min-h-[52px] items-center gap-2 rounded-full bg-sand px-6 text-[15px] font-bold text-navy-deep shadow-[0_14px_28px_-14px_rgba(217,119,42,0.9)] transition hover:bg-[#e08a3c] focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                          >
-                            <CalendarCheck className="h-4.5 w-4.5" aria-hidden />
-                            {t.cta.scheduleVisit}
-                          </button>
-                          <p className="inline-flex items-center gap-2 text-sm text-ink-soft">
-                            <GraduationCap
-                              className="h-4.5 w-4.5 text-sand-deep"
-                              aria-hidden
-                            />
-                            {t.doctor.credentialsNote}
-                          </p>
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Controls: dots + arrows (manual only) */}
-            <div className="mt-6 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5" role="tablist" aria-label={t.doctors.ariaLabel}>
-                {clinicDoctors.map((d, i) => (
-                  <button
-                    key={d.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === index}
-                    aria-label={t.doctors.dotLabel(d.name)}
-                    onClick={() => goTo(i)}
-                    className={cn(
-                      "h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-2",
-                      i === index
-                        ? "w-7 bg-sand"
-                        : "w-2.5 bg-line hover:bg-aqua-deep"
-                    )}
-                  />
-                ))}
-              </div>
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => goTo(index - 1)}
-                  aria-label={t.doctors.prev}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-navy transition hover:bg-navy hover:text-offwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-2"
-                >
-                  <ChevronLeft className="h-5 w-5" aria-hidden />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => goTo(index + 1)}
-                  aria-label={t.doctors.next}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-navy transition hover:bg-navy hover:text-offwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-2"
-                >
-                  <ChevronRight className="h-5 w-5" aria-hidden />
-                </button>
-              </div>
-            </div>
-
-            {/* Slide change announcement for screen readers */}
-            <p aria-live="polite" className="sr-only">
-              {announce || t.doctors.liveRegion(1, total, clinicDoctors[0].name)}
-            </p>
-          </div>
-        </Reveal>
+        {/* B. Visiting Specialists — visually distinct via its own heading
+            and extra spacing, same section and card system */}
+        <div className="mt-14">
+          <Reveal>
+            <SubsectionHeading label={t.doctors.visitingLabel} />
+          </Reveal>
+          <ul className="mt-6 grid gap-6 sm:grid-cols-2">
+            {VISITING_DOCTORS.map((d, i) => (
+              <DoctorCard key={d.id} doctor={d} delay={i * 90} />
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

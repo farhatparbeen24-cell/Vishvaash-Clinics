@@ -26,6 +26,8 @@ export type ServiceOptionKey =
   | "emergency"
   | "dentalConsult"
   | "dentalGeneral"
+  | "urology"
+  | "gastro"
   | "other";
 
 export type AppointmentData = {
@@ -333,6 +335,8 @@ const en = {
       message: "Message / Concern",
     },
     optional: "(optional)",
+    captchaLabel: "Security check",
+    captchaPlaceholder: "Answer",
     placeholders: {
       name: "Full name",
       phone: "98765 43210",
@@ -354,6 +358,8 @@ const en = {
       emergency: "Emergency Eye Care",
       dentalConsult: "Dental Consultation",
       dentalGeneral: "General Dental Care",
+      urology: "Urology Consultation",
+      gastro: "Gastro Consultation",
       other: "Other / Not Sure",
     } as Record<ServiceOptionKey, string>,
     hintDate: "Requests are subject to slot availability.",
@@ -383,6 +389,7 @@ const en = {
       time: "Please choose a preferred time of day.",
       service: "Please select the service you need.",
       consent: "Please allow the clinic to contact you about this request.",
+      captcha: "Please enter the correct security answer.",
     },
     srNote:
       "This form sends an appointment request to Vishvaas Clinic on WhatsApp. It is a request only; the front desk confirms the final slot.",
@@ -504,24 +511,46 @@ const en = {
     eyebrow: "Meet the Doctors",
     titleA: "The doctors at",
     titleAccent: "Vishvaas Clinic.",
+    /* Phase 3 grouping — subsection headings inside Meet the Doctors. */
+    coreLabel: "Core Doctors",
+    visitingLabel: "Visiting Specialists",
     prev: "Previous doctor",
     next: "Next doctor",
     dotLabel: (name: string) => `Show ${name}`,
     liveRegion: (pos: number, total: number, name: string) =>
       `Slide ${pos} of ${total}: ${name}`,
-    departments: { eye: "Eye Care", dental: "Dental Care" },
+    departments: {
+      eye: "Eye Care",
+      dental: "Dental Care",
+      visiting: "Visiting Specialist",
+    },
+    /* Card credential-row labels (Phase 3). */
+    cardLabels: {
+      qualifications: "Qualifications",
+      registration: "Registration",
+      clinic: "Clinic",
+      consultingHours: "Consulting Hours",
+      availability: "Availability",
+    },
+    regPrefix: "Reg. No.",
     people: {
       "himanshu-arora": {
-        specialty: "Consultant Ophthalmologist",
-        shortDescription:
-          "Eye-care consultations and cataract-focused support at Vishvaas Clinic.",
-        cta: "Request Eye Consultation",
+        role: "Consultant Ophthalmologist",
+        focus: "Phaco-Cataract & Glaucoma Consultant",
+        credentialLine: "Long-term Anterior Segment Fellowship",
       },
       "shruti-beri-arora": {
-        specialty: "Consultant Dental Surgeon",
-        shortDescription:
-          "Dental consultation and patient-focused dental-care support at Vishvaas Clinic.",
-        cta: "Request Dental Consultation",
+        role: "Consultant Dental Surgeon & Periodontist",
+      },
+      "shalabh-aggarwal": {
+        role: "Urologist & Kidney Transplant Surgeon",
+        hours: "Monday–Friday: 5:30 PM–7:00 PM",
+        saturday: "Saturday: By Appointment",
+      },
+      "akshay-rawat": {
+        role: "Gastroenterologist, Hepatologist & Endoscopist",
+        hours: "Monday–Friday: 5:30 PM–6:30 PM",
+        saturday: "Saturday: By Appointment",
       },
     } as Record<DoctorId, DoctorText>,
   },
@@ -862,6 +891,8 @@ const hi: Dictionary = {
       message: "संदेश / समस्या",
     },
     optional: "(वैकल्पिक)",
+    captchaLabel: "सुरक्षा जाँच",
+    captchaPlaceholder: "उत्तर",
     placeholders: {
       name: "पूरा नाम",
       phone: "98765 43210",
@@ -883,6 +914,8 @@ const hi: Dictionary = {
       emergency: "आपातकालीन नेत्र देखभाल",
       dentalConsult: "दंत परामर्श",
       dentalGeneral: "सामान्य दंत देखभाल",
+      urology: "यूरोलॉजी परामर्श",
+      gastro: "गैस्ट्रो परामर्श",
       other: "अन्य / पता नहीं",
     } as Record<ServiceOptionKey, string>,
     hintDate: "अनुरोध स्लॉट की उपलब्धता के अधीन हैं।",
@@ -911,6 +944,7 @@ const hi: Dictionary = {
       time: "कृपया दिन का पसंदीदा समय चुनें।",
       service: "कृपया आवश्यक सेवा चुनें।",
       consent: "कृपया इस अनुरोध के संबंध में संपर्क की अनुमति दें।",
+      captcha: "कृपया सही सुरक्षा उत्तर दर्ज करें।",
     },
     srNote:
       "यह फ़ॉर्म Vishvaas Clinic को WhatsApp पर अपॉइंटमेंट का अनुरोध भेजता है। यह केवल अनुरोध है; अंतिम स्लॉट फ्रंट डेस्क पक्का करता है।",
@@ -1031,24 +1065,46 @@ const hi: Dictionary = {
     eyebrow: "हमारे डॉक्टरों से मिलें",
     titleA: "Vishvaas Clinic के",
     titleAccent: "डॉक्टर।",
+    /* Phase 3 ग्रुपिंग — Meet the Doctors के भीतर सब-सेक्शन शीर्षक। */
+    coreLabel: "मुख्य डॉक्टर",
+    visitingLabel: "विज़िटिंग विशेषज्ञ",
     prev: "पिछले डॉक्टर",
     next: "अगले डॉक्टर",
     dotLabel: (name: string) => `${name} दिखाएँ`,
     liveRegion: (pos: number, total: number, name: string) =>
       `स्लाइड ${pos} / ${total}: ${name}`,
-    departments: { eye: "नेत्र देखभाल", dental: "दंत चिकित्सा" },
+    departments: {
+      eye: "नेत्र देखभाल",
+      dental: "दंत चिकित्सा",
+      visiting: "विज़िटिंग विशेषज्ञ",
+    },
+    /* कार्ड क्रेडेंशियल-पंक्ति लेबल (Phase 3)। */
+    cardLabels: {
+      qualifications: "योग्यताएँ",
+      registration: "पंजीकरण",
+      clinic: "क्लिनिक",
+      consultingHours: "परामर्श समय",
+      availability: "उपलब्धता",
+    },
+    regPrefix: "पंजीकरण सं.",
     people: {
       "himanshu-arora": {
-        specialty: "सलाहकार नेत्र रोग विशेषज्ञ",
-        shortDescription:
-          "Vishvaas Clinic में नेत्र-देखभाल परामर्श और मोतियाबिंद-केंद्रित सहायता।",
-        cta: "नेत्र परामर्श का अनुरोध करें",
+        role: "सलाहकार नेत्र रोग विशेषज्ञ",
+        focus: "फैको-मोतियाबिंद एवं ग्लूकोमा सलाहकार",
+        credentialLine: "दीर्घकालीन एंटीरियर सेगमेंट फेलोशिप",
       },
       "shruti-beri-arora": {
-        specialty: "सलाहकार दंत सर्जन",
-        shortDescription:
-          "Vishvaas Clinic में दंत परामर्श और मरीज़-केंद्रित दंत-देखभाल सहायता।",
-        cta: "दंत परामर्श का अनुरोध करें",
+        role: "सलाहकार दंत सर्जन एवं पीरियोडोन्टिस्ट",
+      },
+      "shalabh-aggarwal": {
+        role: "यूरोलॉजिस्ट एवं किडनी ट्रांसप्लांट सर्जन",
+        hours: "सोमवार–शुक्रवार: शाम 5:30 – 7:00 बजे",
+        saturday: "शनिवार: अपॉइंटमेंट पर",
+      },
+      "akshay-rawat": {
+        role: "गैस्ट्रोएंटरोलॉजिस्ट, हेपेटोलॉजिस्ट एवं एंडोस्कोपिस्ट",
+        hours: "सोमवार–शुक्रवार: शाम 5:30 – 6:30 बजे",
+        saturday: "शनिवार: अपॉइंटमेंट पर",
       },
     } as Record<DoctorId, DoctorText>,
   },

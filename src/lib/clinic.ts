@@ -88,16 +88,16 @@ export const clinic = {
      * This entry is kept for legacy/SEO references only.
      */
     /**
-     * PHOTO RESTORED (owner-verified): the clinic's original uploaded portrait
-     * of Dr. Himanshu Arora, restored by explicit owner instruction. The live
-     * doctor profiles (photo, alt, sizes) live in lib/doctors.ts — see rule 2.
+     * PHOTO (Phase 3 approved asset): WebP transcode of the clinic's newly
+     * supplied approved portrait. The live doctor profiles (photo, alt,
+     * sizes) live in lib/doctors.ts — see rule 2 there.
      */
-    photo: "/images/doctors/dr-himanshu-arora.jpg" as string | null,
-    /** Exact alt text for the portrait. */
-    photoAlt: "Dr. Himanshu Arora, Eye Care",
+    photo: "/images/doctors/dr-himanshu-arora-profile.webp" as string | null,
+    /** Exact alt text for the portrait (approved Phase 3 alt). */
+    photoAlt: "Dr. Himanshu Arora, Consultant Ophthalmologist",
     /** Provenance note for the photo (internal bookkeeping). */
     photoSource:
-      "Clinic's original uploaded portrait (owner-verified, restored unaltered)",
+      "Clinic-supplied approved portrait (Phase 3, non-destructive WebP transcode)",
     /** Editable placeholder fields — to be filled with verified details. */
     profileNote: "Professional profile details to be confirmed",
     approachNote: "Consultation approach and background",
@@ -203,6 +203,8 @@ export const clinic = {
       { key: "emergency", value: "Emergency Eye Care" },
       { key: "dentalConsult", value: "Dental Consultation" },
       { key: "dentalGeneral", value: "General Dental Care" },
+      { key: "urology", value: "Urology Consultation" },
+      { key: "gastro", value: "Gastro Consultation" },
       { key: "other", value: "Other / Not Sure" },
     ] as Array<{
       key:
@@ -213,6 +215,8 @@ export const clinic = {
         | "emergency"
         | "dentalConsult"
         | "dentalGeneral"
+        | "urology"
+        | "gastro"
         | "other";
       value: string;
     }>,

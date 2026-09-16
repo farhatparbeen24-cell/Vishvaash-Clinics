@@ -147,7 +147,9 @@ export function AppointmentCTA() {
                     const dLabel =
                       d.department === "Eye Care"
                         ? t.doctors.departments.eye
-                        : t.doctors.departments.dental;
+                        : d.department === "Dental Care"
+                          ? t.doctors.departments.dental
+                          : t.doctors.departments.visiting;
                     const size = doctorImageSize[d.id];
                     return (
                       <button
