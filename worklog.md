@@ -166,3 +166,23 @@ Work Log:
 Stage Summary:
 - One-time auto booking popup live on the homepage: 4s after full page load, once per session, 30-day suppression after successful submission, homepage-only by construction.
 - Dialog heading "Book an Appointment" + supporting line in EN/HI; every field, selector, pre-selection, CAPTCHA, WhatsApp number/message and CTA behaviour byte-preserved (E2E-verified).
+
+---
+Task ID: 9
+Agent: Super Z (main agent)
+Task: User-reported console error — hydration mismatch on footer LegalDialogs (aria-controls "radix-_R_qkindlb_" client vs "radix-_R_3aiatllb_" server, privacy + terms triggers). Diagnose and resolve without changing any section behaviour.
+
+Work Log:
+- Reproduction attempt: fresh loads (desktop ×5, 390×844, HI locale persisted) via agent-browser → console CLEAN every time (only HMR/DevTools info logs). Could not reproduce on the current build.
+- Mechanism traced: Radix useId wrapper (node_modules/@radix-ui/react-id) returns `radix-${React.useId()}`; DialogTrigger always renders aria-controls={contentId}. React useId is purely tree-position-based → a mismatch requires the client fiber tree shape to differ from the tree that produced the SSR HTML.
+- App-code audit for hydration hazards (grep + reads): LanguageProvider (deferred localStorage via rAF in effect), AppointmentProvider ({isOpen && Modal} — closed during hydration), AutoAppointmentPopup (renders null, effects only), Header scroll state (effect), use-mobile (effect), Hero matchMedia (effect), AppointmentForm date/captcha (inside unmounted modal) — ALL effect/handler-confined. No typeof-window/Math.random/Date branches in any hydration-time render path. layout.tsx already suppressHydrationWarning on <html>.
+- Smoking gun: current SSR HTML (curl) renders aria-controls="radix-_R_3aiatllb_" and "radix-_R_5aiatllb_" — EXACTLY the server values in the user's error. The user's client values (qkindlb/1akindlb — shorter tree path) match NO output of the current code → their browser hydrated current server HTML against a stale/different client chunk (Turbopack dev chunk-cache skew or HMR race while Task 7/8 files were being edited; commits 14:18/14:41). Not an app bug.
+- Functional regression (scripts/p9-hydration-regression.sh): privacy/terms dialogs open + Escape-close; trigger aria-controls === dialog DOM id (radix-_R_3aiatllb_) so a11y linkage is correct on the current build; HI toggle → गोपनीयता नीति / शर्तें एवं चिकित्सा अस्वीकरण; header CTA opens booking modal (HI heading अपॉइंटमेंट बुक करें). One initial "failure" was the Task 8 auto-popup racing the test at ~4s (it correctly opened "Book an Appointment") — re-verified with the session flag pre-set.
+- Ops incident + recovery: dev server was cleanly restarted to clear Turbopack incremental state; sandbox reaping kills tool-session-spawned processes at call boundaries (setsid alone insufficient). Fixed with double-fork `( (setsid bun run dev >> dev.log 2>&1 < /dev/null) & )` → bun PPID=1, survives call boundaries (same shape as the boot-launched original). NOTE for future agents: use the double-fork pattern for any persistent process.
+- Post-restart full verification (scripts/p9-post-restart-verify.sh): auto-popup opened 4203ms after load with "Book an Appointment" + support line + session flag; dismiss→reload stays suppressed; manual CTA opens with CAPTCHA input present; console + page errors clean (no hydration mismatch).
+- Zero src/ changes in this task (diagnosis + QA scripts only): git shows only new scripts/p9-*.sh + worklog.
+
+Stage Summary:
+- Hydration error was a stale-client-bundle dev-mode artifact, not an app defect; current code hydrates cleanly (proven across 8 load scenarios) and Radix a11y wiring is intact.
+- User remediation: one hard reload (Ctrl+Shift+R) — or clear site data / incognito if ever seen again — dev server freshly restarted.
+- Task 8 auto-popup behaviour re-verified end-to-end post-restart (timing, heading, suppression, manual CTAs, CAPTCHA).
