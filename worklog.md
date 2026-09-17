@@ -212,3 +212,26 @@ Stage Summary:
 - Production bundle (what Vercel serves) verified end-to-end: hydration clean, auto-popup timing/suppression, manual CTAs, legal dialogs, bilingual toggle, responsive overflow — all green.
 - The earlier hydration error cannot occur on Vercel's production build (hashed chunks, no HMR state); the dev-mode diagnosis from Task 9 stands.
 - Note for future agents: never `pkill -f next-server` while dev is running — it matches the dev server too. Kill by port/PID instead.
+
+---
+Task ID: 11
+Agent: Super Z (main agent)
+Task: Mobile-only redesign of the appointment popup (≤480px) into a compact bottom sheet — sheet ≤85dvh, drag handle, compact 2-col doctor selector, Patient Name in first view, sticky submit bar, safe-area/keyboard handling. No changes to desktop/tablet layout, auto-popup logic, doctor data, fields, CAPTCHA, WhatsApp flow, translations, or any other section.
+
+Work Log:
+- BEFORE captures at 360/390/412/480 (auto-open) + desktop 1280 / tablet 768 (scripts/p11-capture.sh): confirmed the complaint — 176px photo banner + heading + four stacked doctor chips consumed the viewport; Patient Name cut at the fold at 360px.
+- Implementation (4 files, all mobile changes via a new inclusive Tailwind variant):
+  1. src/app/globals.css: `@custom-variant max-480 (@media (max-width: 480px))`. DISCOVERY: Tailwind v4's built-in `max-[480px]:` compiles to `@media not (min-width: 480px)` which EXCLUDES exactly 480px — the custom variant includes it.
+  2. src/components/appointment/AppointmentModal.tsx: dialog `max-480:max-h-[85dvh]` (band 80–85dvh); drag-handle bar (≤480 only); photo banner hidden ≤480 (photos/names remain in selector); compact header spacing; doctor switcher becomes a 2-col grid ≤480 (same 4 buttons, same onSwitchDoctor/preselection, photos kept, min-h-48px touch targets); scroller gets `overscroll-contain`, momentum (`-webkit-overflow-scrolling:touch`), pb-0 ≤480 so the pinned bar sits flush.
+  3. src/components/appointment/AppointmentForm.tsx: submit button wrapped in a ≤480-only sticky wrapper (`sticky bottom-0`, bg-white, border-t, top shadow, `pb-[calc(env(safe-area-inset-bottom)+0.75rem)]`); CAPTCHA stays immediately before it in form sequence; `scroll-mb-24` on all fields so focus-scroll never parks a field under the bar; tightened section gaps. >480px the wrapper is a plain div — desktop byte-identical.
+  4. src/app/layout.tsx: `interactiveWidget: "resizes-content"` so the on-screen keyboard resizes the layout viewport — focused field AND pinned submit stay above the keyboard (req 9). Safe-area respected without viewportFit=cover (avoids global notch side-effects).
+- Fix iterations: (a) 480px initially matched the old layout (excluded by `not (min-width: 480px)`) → custom variant; (b) `scroll-padding-bottom` on the scroller shrank the sticky constraint rectangle and left the bar floating 96px up → replaced with per-field `scroll-margin-bottom`; (c) scroller pb created a 16px gap under the pinned bar → pb-0 + end-spacing moved to the emergency note.
+- Verification (scripts/p11-verify.sh): 68/68 PASS — all four widths: auto-open, sheet 663px = 85dvh of 780 (within band), handle visible, bar pinned flush (safe-area pb 12px), Patient Name fully visible in first view (top y 443–497), 2-col selector with 4 photos, exactly one preselected, zero horizontal overflow, overscroll contained, html+body locked; real wheel input does NOT scroll the page behind (JS scrollBy can move hidden overflow — not user-reachable; wheel test is the honest one); all 4 doctors selectable (services 5/3/2/2 follow doctor), switch clears only service; full submission → correct wa.me/917252991991 deep link with doctor+patient data, post-submit status, 30-day suppression timestamp; CAPTCHA above pinned bar at scroll end; Escape closes + lock released; manual CTA opens same sheet; HI via mobile menu → heading अपॉइंटमेंट बुक करें, sheet still 85dvh 2-col; Tab focus trapped.
+- Desktop/tablet unchanged proof (scripts/p11-pixdiff.py): control experiment showed two same-code captures diff to 0px; before-vs-after diffs localized to the four chip avatar JPEGs (dev next/image optimizer re-encode across server restarts); with avatar rects masked → desktop1280 dialog IDENTICAL (0 px), tablet768 full frame IDENTICAL (0 px).
+- tsc: 0 src errors; eslint: 0 errors on touched files. `bun run build`: EXIT 0 (custom variant compiles in webpack production build — safe for Vercel redeploy).
+- Screenshots: qa/p11-{before,after}-{mob360,mob390,mob412,mob480,desktop1280,tablet768}.png + qa/p11-after-mob480-scrollend.png; user copies in download/mobile-popup-qa/.
+
+Stage Summary:
+- ≤480px: compact bottom sheet (85dvh max), drag handle + existing close button, independently scrollable momentum content, 2×2 compact doctor selector with photos + preselection intact, Patient Name visible immediately, sticky safe-area-aware submit bar, keyboard-resize handling, all a11y preserved (focus trap/Escape/backdrop/labels).
+- >480px: byte-identical rendering (pixel-proven at 1280/768).
+- Auto-popup timing/logic, doctor data, fields, CAPTCHA, WhatsApp number/message, translations: untouched.

@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Inclusive ≤480px breakpoint for the appointment bottom-sheet redesign.
+   Tailwind's built-in max-[480px] compiles to `not (min-width: 480px)`,
+   which EXCLUDES exactly 480px — this custom variant includes it. */
+@custom-variant max-480 (@media (max-width: 480px));
+
 @theme inline {
   /* Vishvaas Clinic brand palette — approved three-color direction:
      dark blue #0B2B40 · white/#F8FBFC · orange accent #D9772A */

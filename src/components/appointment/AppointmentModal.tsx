@@ -134,8 +134,14 @@ export function AppointmentModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="appointment-modal-title"
-          className="pointer-events-auto relative flex max-h-[94dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[26px] bg-white shadow-[0_40px_90px_-30px_rgba(8,31,48,0.7)] outline-none sm:max-h-[min(760px,92dvh)] sm:rounded-[26px]"
+          className="pointer-events-auto relative flex max-h-[94dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[26px] bg-white shadow-[0_40px_90px_-30px_rgba(8,31,48,0.7)] outline-none max-480:max-h-[85dvh] sm:max-h-[min(760px,92dvh)] sm:rounded-[26px]"
         >
+          {/* Mobile bottom-sheet drag handle — visual affordance only (≤480px).
+              Desktop/tablet (sm: panel layout) never shows it. */}
+          <div
+            aria-hidden
+            className="mx-auto mt-2.5 hidden h-1.5 w-11 shrink-0 rounded-full bg-navy/20 max-480:block"
+          />
           {/* Close — always visible, never scrolls away */}
           <button
             ref={closeRef}
@@ -149,7 +155,7 @@ export function AppointmentModal({
 
           <div className="grid min-h-0 flex-1 sm:grid-cols-[0.88fr_1.12fr]">
             {/* ── Doctor panel (selected doctor ONLY) ─────────────────── */}
-            <figure className="relative h-44 shrink-0 overflow-hidden bg-navy sm:h-auto sm:min-h-[540px]">
+            <figure className="relative h-44 shrink-0 overflow-hidden bg-navy sm:h-auto sm:min-h-[540px] max-480:hidden">
               {/* The clinic's original owner-verified portrait — face-safe
                   crop, same doctor as the name/specialty below */}
               <Image
@@ -181,20 +187,20 @@ export function AppointmentModal({
 
             {/* ── Form column ─────────────────────────────────────────── */}
             <div className="flex min-h-0 min-w-0 flex-col">
-              <div className="border-b border-line bg-offwhite px-5 pb-4 pt-5 sm:px-8 sm:pb-5 sm:pt-7">
+              <div className="border-b border-line bg-offwhite px-5 pb-4 pt-5 max-480:px-4 max-480:pb-3 max-480:pt-4 sm:px-8 sm:pb-5 sm:pt-7">
                 <p className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-sand-deep">
                   {t.popup.eyebrow}
                 </p>
                 <h2
                   id="appointment-modal-title"
-                  className="font-display mt-1.5 text-2xl leading-tight text-navy sm:text-[1.75rem]"
+                  className="font-display mt-1.5 text-2xl leading-tight text-navy max-480:mt-1 max-480:text-[1.35rem] sm:text-[1.75rem]"
                 >
                   {t.popup.heading}
                 </h2>
-                <p className="mt-1.5 text-sm font-semibold leading-relaxed text-navy">
+                <p className="mt-1.5 text-sm font-semibold leading-relaxed text-navy max-480:mt-1 max-480:text-[13.5px]">
                   {t.popup.support}
                 </p>
-                <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft max-480:mt-1 max-480:text-[12.5px]">
                   {t.popup.sub}
                 </p>
 
@@ -202,12 +208,15 @@ export function AppointmentModal({
                 <div
                   role="group"
                   aria-label={t.popup.chooseDoctor}
-                  className="mt-4"
+                  className="mt-4 max-480:mt-3"
                 >
                   <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-soft">
                     {t.popup.chooseDoctor}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  {/* ≤480px: compact two-column selector grid — same four
+                      doctors, same photos, same onSwitchDoctor/preselection.
+                      >480px: original wrap layout, untouched. */}
+                  <div className="mt-2 flex flex-wrap gap-2 max-480:mt-1.5 max-480:grid max-480:grid-cols-2 max-480:gap-2">
                     {clinicDoctors.map((d) => {
                       const active = d.id === doctor.id;
                       const dLabel =
@@ -264,8 +273,13 @@ export function AppointmentModal({
               </div>
 
               {/* Scrollable form area — the on-screen keyboard scrolls fields
-                  into view inside this container, never off-screen */}
-              <div className="nice-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-6">
+                  into view inside this container, never off-screen.
+                  ≤480px bottom sheet: independent momentum scrolling with
+                  overscroll containment (page stays locked behind); bottom
+                  padding is zeroed so the pinned submit bar sits flush with
+                  the sheet edge (in-flow end-spacing lives on the form's
+                  last block instead). */}
+              <div className="nice-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 [-webkit-overflow-scrolling:touch] max-480:overscroll-contain max-480:px-4 max-480:pt-4 max-480:pb-0 sm:px-8 sm:py-6">
                 <AppointmentForm
                   doctor={doctor}
                   initialService={prefillService}

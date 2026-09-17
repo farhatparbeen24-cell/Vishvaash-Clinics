@@ -63,6 +63,11 @@ export const viewport: Viewport = {
   themeColor: "#0b2b40",
   width: "device-width",
   initialScale: 1,
+  // On-screen keyboards resize the layout viewport (not just the visual
+  // viewport), so the mobile appointment bottom-sheet — its pinned submit
+  // bar and the focused field — always stay above the keyboard. Desktop
+  // and browsers without support ignore it.
+  interactiveWidget: "resizes-content",
 };
 
 /**

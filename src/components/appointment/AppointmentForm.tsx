@@ -258,8 +258,10 @@ export function AppointmentForm({
     nameRef.current?.focus();
   };
 
+  // max-480:scroll-mb-24 — focused fields scroll into view with 96px
+  // clearance below them so the pinned mobile submit bar never covers them.
   const inputBase =
-    "min-h-[52px] w-full rounded-xl border bg-white px-4 text-[15px] text-ink placeholder:text-ink-soft/50 transition focus:outline-none focus:ring-2 focus:ring-sand/60";
+    "min-h-[52px] w-full rounded-xl border bg-white px-4 text-[15px] text-ink placeholder:text-ink-soft/50 transition focus:outline-none focus:ring-2 focus:ring-sand/60 max-480:scroll-mb-24";
   const inputOk = "border-line hover:border-sand/40";
   const inputErr = "border-destructive/70 bg-destructive/5 focus:ring-destructive/40";
 
@@ -269,7 +271,7 @@ export function AppointmentForm({
       noValidate
       aria-label={t.form.ariaLabel}
     >
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 max-480:gap-4 sm:grid-cols-2">
         {/* Name */}
         <div className="sm:col-span-1">
           <label htmlFor="field-name" className="mb-1.5 block text-sm font-bold text-navy">
@@ -445,7 +447,7 @@ export function AppointmentForm({
       </div>
 
       {/* Consent */}
-      <div className="mt-5">
+      <div className="mt-5 max-480:mt-4">
         <div className="flex items-start gap-3 rounded-xl border border-line bg-offwhite p-4">
           <input
             id="field-consent"
@@ -455,7 +457,7 @@ export function AppointmentForm({
             onChange={(e) => set("consent", e.target.checked)}
             aria-invalid={!!errors.consent}
             aria-describedby={errors.consent ? "error-consent" : undefined}
-            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-[#0b2b40]"
+            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded accent-[#0b2b40] max-480:scroll-mb-24"
           />
           <label htmlFor="field-consent" className="cursor-pointer text-sm leading-relaxed text-ink">
             {t.form.consent}{" "}
@@ -470,13 +472,13 @@ export function AppointmentForm({
       </div>
 
       {/* Privacy note */}
-      <p className="mt-4 flex items-start gap-2 text-[12.5px] leading-relaxed text-ink-soft">
+      <p className="mt-4 flex items-start gap-2 text-[12.5px] leading-relaxed text-ink-soft max-480:mt-3">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-sand-deep" aria-hidden />
         {t.form.privacyNote}
       </p>
 
       {/* Security check (client-side anti-bot) — immediately above submit */}
-      <div className="mt-5">
+      <div className="mt-5 max-480:mt-4">
         <label htmlFor="field-captcha" className="mb-1.5 block text-sm font-bold text-navy">
           {t.form.captchaLabel} <span className="text-destructive" aria-hidden>*</span>
         </label>
@@ -515,29 +517,35 @@ export function AppointmentForm({
         )}
       </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={status === "opening"}
-        className={cn(
-          "mt-6 inline-flex min-h-[56px] w-full items-center justify-center gap-2.5 rounded-full bg-wa text-base font-bold text-white",
-          "shadow-[0_16px_32px_-16px_rgba(14,122,74,0.7)] transition hover:bg-wa-deep active:scale-[0.99]",
-          status === "opening" && "cursor-wait opacity-80"
-        )}
-      >
-        {status === "opening" ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-            {t.form.submitting}
-          </>
-        ) : (
-          <>
-            <Send className="h-5 w-5" aria-hidden />
-            {t.form.submit}
-          </>
-        )}
-      </button>
-      <p className="mt-3 text-center text-[12.5px] leading-relaxed text-ink-soft">
+      {/* Submit — ≤480px: pinned to the bottom of the bottom-sheet (sticky
+          inside the scroll area) so the final action is always reachable
+          while the form scrolls above it. The wrapper carries the safe-area
+          inset so Android/iOS home bars can never hide the button.
+          >480px: plain block — desktop layout byte-identical. */}
+      <div className="max-480:sticky max-480:bottom-0 max-480:z-20 max-480:-mx-4 max-480:mt-4 max-480:border-t max-480:border-line/70 max-480:bg-white max-480:px-4 max-480:pt-3 max-480:pb-[calc(env(safe-area-inset-bottom)+0.75rem)] max-480:shadow-[0_-12px_32px_-20px_rgba(8,31,48,0.4)]">
+        <button
+          type="submit"
+          disabled={status === "opening"}
+          className={cn(
+            "mt-6 inline-flex min-h-[56px] w-full items-center justify-center gap-2.5 rounded-full bg-wa text-base font-bold text-white max-480:mt-0",
+            "shadow-[0_16px_32px_-16px_rgba(14,122,74,0.7)] transition hover:bg-wa-deep active:scale-[0.99]",
+            status === "opening" && "cursor-wait opacity-80"
+          )}
+        >
+          {status === "opening" ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+              {t.form.submitting}
+            </>
+          ) : (
+            <>
+              <Send className="h-5 w-5" aria-hidden />
+              {t.form.submit}
+            </>
+          )}
+        </button>
+      </div>
+      <p className="mt-3 text-center text-[12.5px] leading-relaxed text-ink-soft max-480:mt-2.5">
         {t.form.underButton}
       </p>
 
@@ -578,8 +586,10 @@ export function AppointmentForm({
         </div>
       )}
 
-      {/* Emergency note */}
-      <p className="mt-6 flex items-start gap-2.5 rounded-2xl border border-sand/50 bg-sand/10 p-4 text-[12.5px] leading-relaxed text-ink">
+      {/* Emergency note — last in-flow block; carries the ≤480px end spacing
+          because the sheet's scroll container zeroes its bottom padding so
+          the pinned submit bar sits flush with the sheet edge. */}
+      <p className="mt-6 flex items-start gap-2.5 rounded-2xl border border-sand/50 bg-sand/10 p-4 text-[12.5px] leading-relaxed text-ink max-480:mb-4">
         <ShieldAlert className="mt-0.5 h-4.5 w-4.5 shrink-0 text-sand-deep" aria-hidden />
         {t.form.emergencyNote}
       </p>
