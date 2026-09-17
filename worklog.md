@@ -235,3 +235,22 @@ Stage Summary:
 - ≤480px: compact bottom sheet (85dvh max), drag handle + existing close button, independently scrollable momentum content, 2×2 compact doctor selector with photos + preselection intact, Patient Name visible immediately, sticky safe-area-aware submit bar, keyboard-resize handling, all a11y preserved (focus trap/Escape/backdrop/labels).
 - >480px: byte-identical rendering (pixel-proven at 1280/768).
 - Auto-popup timing/logic, doctor data, fields, CAPTCHA, WhatsApp number/message, translations: untouched.
+
+---
+Task ID: 12
+Agent: Super Z (main agent)
+Task: Two approved corrections only — (1) replace the header/footer logo with the newly uploaded approved transparent asset (VC monogram + "Vishvaas Clinic" + "The Opinion We Can Trust"), slightly bigger/bolder, tagline never removed, backgrounds/nav/CTA/footer untouched; (2) exact BDS credential text for Dr. Shruti Beri Arora. Nothing else.
+
+Work Log:
+- Asset analysis (upload/file_00000000e66c82118efbabadcd9cdb38.png): RGBA 2172x724 with real alpha; visible content bbox 2100x335 (aspect 6.206) inside large transparent margins; wordmark band = 54% of content height, tagline band = 23.3%; white wordmark + orange accents suit royal #1428A0 / navy backgrounds.
+- Export (scripts/p12-export-logo.py): trimmed ONLY fully-transparent margins (+2px pad), LANCZOS downscale to 1260x203 -> public/images/brand/vishvaas-clinic-logo.png (303KB, >=4.5x the largest display width; sharp at 3x DPR). No design pixels changed.
+- Logo.tsx rebuilt around next/image (alt "Vishvaas Clinic — The Opinion We Can Trust", priority in header). tone/compact props kept for call-site compatibility; tagline is baked in the artwork and can never be removed.
+- Sizing discovery: the desktop header row is permanently flex-packed (logo 263.8 + nav natural 595.5 + right 321.5 > 1104 content width — the OLD text logo sat at its min-content floor, so it never squeezed; an img does). First attempt h-44 distorted the image (rendered aspect 5.59) via flex shrink + max-width:100%. Fix: header h-[42px] (260.7px wide — 3px NARROWER than the old 263.8px footprint, so nav/CTA keep >= previous breathing room: nav 525.8 vs old 522.6), footer h-[46px] sm:h-[52px] md:h-[56px] (old footer mark was 40px), plus `max-w-none` on the image and `flex shrink-0 items-center` on the Header logo anchor (no distortion possible; perfect vertical centering, centerOffset 0).
+- doctors.ts line 120: "B.D.S. — Manipal" -> "B.D.S. — Manipal College of Dental Sciences (MCODS), Mangalore". Only render site is DoctorSlider card list (wraps safely). No other occurrence in src/.
+- Verification (scripts/p12-capture.sh + scripts/p12-verify.sh): 6 widths x {header, footer, Shruti card} before/after screenshots (qa/p12-*, user copies in download/logo-credential-qa/); all widths: zero horizontal overflow, header+footer logo aspect 6.207 (undistorted), alt exact, credential string exact (incl. sr-only label check), console 0 errors/warnings, 0 network 4xx/5xx; 360 fresh-load footer logo 285.5x46 fits column (x16..301.5); nav/lang/CTA boxes flush-identical to the shipped design at 1280; HI toggle works (logo is a static asset per approval, footer address still uses t.brand.descriptor); booking modal opens with 4-doctor picker intact, Escape closes; 768/1280/1440 visually clean.
+- bun run build: EXIT 0 (Vercel-safe). tsc src/: 0 errors; eslint touched files: clean.
+
+Stage Summary:
+- Files changed: src/components/layout/Logo.tsx, src/components/layout/Header.tsx (1 class line), src/lib/doctors.ts (1 line), new public/images/brand/vishvaas-clinic-logo.png. Nothing else touched — no desktop/tablet layout, no auto-popup logic, no doctor data besides the single BDS line, no CAPTCHA/WhatsApp/translations/nav/footer items.
+- Header logo: bolder serif wordmark (~23px caps vs ~17px before) + tagline always visible; sized to the maximum the packed desktop row can hold without touching nav/CTA. Footer logo clearly larger (46-56px vs 40px).
+- All six widths verified; build green; screenshots in download/logo-credential-qa/.

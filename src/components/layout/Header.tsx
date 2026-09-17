@@ -58,7 +58,7 @@ export function Header() {
       <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <a
           href="#top"
-          className="rounded-lg"
+          className="flex shrink-0 items-center rounded-lg"
           aria-label={`${clinic.name} — back to top`}
         >
           <Logo tone="light" variant="header" />

@@ -117,7 +117,7 @@ export const clinicDoctors: ClinicDoctor[] = [
     group: "core",
     role: "Consultant Dental Surgeon & Periodontist",
     qualifications: [
-      "B.D.S. — Manipal",
+      "B.D.S. — Manipal College of Dental Sciences (MCODS), Mangalore",
       "M.D.S. — Government Dental College, Chennai",
     ],
     exConsultant: [
